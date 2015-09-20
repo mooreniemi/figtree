@@ -2,7 +2,7 @@ require 'parslet'
 
 class Figtree < Parslet::Parser
   rule(:group_title) { match('[a-zA-Z]').repeat(1) }
-  rule(:newline) { match('\\n')  }
+  rule(:newline)  { match("\\n").repeat(1) >> match("\\r").maybe }
   rule(:space) { match('\s').repeat(0) }
   rule(:grouper) {
     str('[') >>
@@ -39,20 +39,34 @@ class Figtree < Parslet::Parser
     space >>
     file_path
   }
-  #rule(:line) { grouper >> comment }
-  #rule(:lines) { line.repeat }
-  #root(:lines)
+
+  rule(:assignment_or_comment) do
+    ( comment | assignment | override_assignment )
+  end
+
+  rule(:group_member) {
+    newline.maybe >>
+    assignment_or_comment >>
+    newline.maybe
+  }
+
+  rule(:group) do
+    (grouper >>
+     group_member.repeat.maybe).repeat.maybe.as(:group)
+  end
+
+  root(:group)
 end
 
 def load_config(file_path, overrides=[])
   # parse the contents
-  parse(File.read(file_path))
+  figgy_parse(File.read(file_path))
   # convert parsed content to OStruct
 end
 
-def parse(str)
-  mini = Figtree.new
-  mini.parse(str)
+def figgy_parse(str)
+  figgy = Figtree.new
+  figgy.parse(str)
 rescue Parslet::ParseFailed => failure
   puts failure.cause.ascii_tree
 end
