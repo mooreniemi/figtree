@@ -13,8 +13,16 @@ class Figtree < Parslet::Parser
     str(';') >>
     (newline.absent? >> any).repeat
   }
+  rule(:file_path) {
+    str('/') >>
+    (snake_case_key >> (str('/') >> snake_case_key).repeat.maybe).maybe.as(:file_path) >>
+    str('/')
+  }
   rule(:snake_case_key) {
     match('[a-zA-Z0-9_]').repeat(1)
+  }
+  rule(:snakey_option_key) {
+    snake_case_key >> str('<') >> snake_case_key >> str('>')
   }
   #TODO should i use http://www.rubydoc.info/github/kschiess/parslet/Parslet.infix_expression here?
   rule(:assignment) {
@@ -23,6 +31,13 @@ class Figtree < Parslet::Parser
     str("=") >>
     space >>
     snake_case_key
+  }
+  rule(:override_assignment) {
+    snakey_option_key >>
+    space >>
+    str("=") >>
+    space >>
+    file_path
   }
   #rule(:line) { grouper >> comment }
   #rule(:lines) { line.repeat }

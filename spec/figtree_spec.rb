@@ -15,5 +15,15 @@ describe "Figtree" do
   end
   it 'can parse assignments' do
     expect(parser.assignment).to parse('basic_size_limit = 26214400')
+    expect(parser.assignment).to_not parse('path<itscript> = /srv/tmp/')
+  end
+  it 'can parse keys with optional overrides' do
+    expect(parser.snakey_option_key).to parse('path<itscript>')
+  end
+  it 'can parse file_paths' do
+    expect(parser.file_path).to parse('/srv/tmp/')
+  end
+  it 'can parse overrides' do
+    expect(parser.override_assignment).to parse('path<itscript> = /srv/tmp/')
   end
 end
