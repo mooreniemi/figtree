@@ -1,8 +1,13 @@
 require 'parslet'
 
-class Mini < Parslet::Parser
-  rule(:integer) { match('[0-9]').repeat(1) }
-  root(:integer)
+class Figtree < Parslet::Parser
+  rule(:identifier) { match('[a-z]').repeat(1) }
+  rule(:grouper) {
+    str('[') >>
+    identifier >>
+    str(']')
+  }
+  root(:grouper)
 end
 
 def load_config(file_path, overrides=[])
@@ -12,8 +17,7 @@ def load_config(file_path, overrides=[])
 end
 
 def parse(str)
-  mini = Mini.new
-
+  mini = Figtree.new
   mini.parse(str)
 rescue Parslet::ParseFailed => failure
   puts failure.cause.ascii_tree
@@ -21,7 +25,10 @@ end
 
 describe "Figtree" do
   let(:settings_path) { 'settings.conf' }
-  it 'can parse integers' do
+  it 'can parse group names' do
+    expect(parse('[common]')).to eq(nil)
+  end
+  xit 'can parse integers' do
     expect(load_config(settings_path)).to eq(nil)
   end
 end
