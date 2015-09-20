@@ -1,58 +1,85 @@
 require 'parslet'
 
+# ConFIG into a Tree :)
 class Figtree < Parslet::Parser
+  rule(:eof) { any.absent? }
   rule(:group_title) { match('[a-zA-Z]').repeat(1) }
   rule(:newline)  { match("\\n").repeat(1) >> match("\\r").maybe }
   rule(:space) { match('\s').repeat(0) }
-  rule(:grouper) {
+  rule(:grouper) do
     str('[') >>
-    group_title >>
+    group_title.as(:group_title) >>
     str(']')
-  }
-  rule(:comment) {
+  end
+
+  rule(:comment) do
     str(';') >>
     (newline.absent? >> any).repeat
-  }
-  rule(:file_path) {
+  end
+
+  rule(:string) do
+    str('"') >>
+    ((str('\\') >> any) | (str('"').absent? >> any)).repeat.as(:string) >>
+    str('"')
+  end
+
+  rule(:boolean) do
+    (str('no') | str('yes'))
+  end
+
+  rule(:number) do
+    match('[0-9]').repeat(1)
+  end
+
+  rule(:array) do
+    (snake_case_key >> (str(',') >> snake_case_key).repeat.maybe).maybe.as(:array) >>
+    (str(',') | newline | eof)
+  end
+
+  rule(:file_path) do
     str('/') >>
     (snake_case_key >> (str('/') >> snake_case_key).repeat.maybe).maybe.as(:file_path) >>
-    str('/')
-  }
-  rule(:snake_case_key) {
+    str('/').maybe
+  end
+
+  rule(:snake_case_key) do
     match('[a-zA-Z0-9_]').repeat(1)
-  }
-  rule(:snakey_option_key) {
+  end
+
+  rule(:snakey_option_key) do
     snake_case_key >> str('<') >> snake_case_key >> str('>')
-  }
-  #TODO should i use http://www.rubydoc.info/github/kschiess/parslet/Parslet.infix_expression here?
-  rule(:assignment) {
+  end
+
+  rule(:assignment) do
     snake_case_key >>
     space >>
     str("=") >>
     space >>
-    snake_case_key
-  }
-  rule(:override_assignment) {
+    (number | boolean | array | snake_case_key | file_path | string)
+  end
+
+  rule(:override_assignment) do
     snakey_option_key >>
     space >>
     str("=") >>
     space >>
     file_path
-  }
+  end
 
   rule(:assignment_or_comment) do
     ( comment | assignment | override_assignment )
   end
 
-  rule(:group_member) {
+  rule(:group_member) do
     newline.maybe >>
     assignment_or_comment >>
     newline.maybe
-  }
+  end
 
   rule(:group) do
     (grouper >>
-     group_member.repeat.maybe).repeat.maybe.as(:group)
+     group_member.repeat.maybe).as(:group).
+       repeat.maybe
   end
 
   root(:group)

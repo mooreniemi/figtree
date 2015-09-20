@@ -16,9 +16,30 @@ describe Figtree do
   it 'can parse snake_case keys' do
     expect(parser.snake_case_key).to parse('basic_size_limit')
   end
+  it 'can parse strings' do
+    expect(parser.string).to parse('"hello there, ftp uploading"')
+  end
+  it 'can parse arrays' do
+    expect(parser.array).to parse("a,")
+    expect(parser.array).to parse("a,b")
+    expect(parser.array).to parse("a,b,c\n")
+    expect(parser.array).to_not parse(',,')
+    expect(parser.array).to parse("array,of,values\n")
+    expect(parser.array).to parse("array,of,values")
+  end
+  it 'can parse numbers' do
+    expect(parser.number).to parse("26214400")
+  end
+  it 'can parse booleans flexibly' do
+    expect(parser.boolean).to parse("no")
+    expect(parser.boolean).to parse("yes")
+  end
   it 'can parse assignments' do
     expect(parser.assignment).to parse('basic_size_limit = 26214400')
+    expect(parser.assignment).to parse('path = /srv/var/tmp/')
     expect(parser.assignment).to_not parse('path<itscript> = /srv/tmp/')
+    expect(parser.assignment).to parse('name = "hello there, ftp uploading"')
+    expect(parser.assignment).to parse('params = array,of,values')
   end
   it 'can parse keys with optional overrides' do
     expect(parser.snakey_option_key).to parse('path<itscript>')
@@ -55,7 +76,8 @@ describe Figtree do
     it 'can parse multiple groups' do
       expect(parser.group).to parse(multi_group)
     end
-    it 'can parse the whole Kebab' do
+    it 'can parse the whole Kebab without any misunderstandings' do
+      # going to STDOUT
       expect(load_config(settings_path)).to eq(nil)
     end
   end
