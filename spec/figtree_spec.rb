@@ -84,6 +84,7 @@ describe Transformer do
     Figtree.new.parse("[common]\nbasic_size_limit = 26214400\n")
   end
   it 'can apply an int type conversion' do
+    puts tree
     expect(Transformer.new.apply(tree)).to eq(
       [
         {
@@ -115,12 +116,12 @@ describe '#load_config' do
   end
 
   it 'can parse a group and provide dot notation access' do
-    puts load_config(settings_path)
     expect(load_config(settings_path).common).to eq(common)
   end
   it 'can parse the overrides correctly' do
     pending('where is best place to override')
-    expect(load_config(settings_path, [:production]).common).to eq(common_with_override) 
+    expect(load_config(settings_path, [:production]).common).
+      to eq(common_with_override)
   end
   it 'can parse the whole Kebab without any misunderstandings' do
     pending('mostly using this to observe stdout')

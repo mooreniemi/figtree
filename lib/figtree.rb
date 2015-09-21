@@ -93,9 +93,14 @@ class Transformer < Parslet::Transform
       key.to_sym => Integer(value)
     }
   end
+  rule(:snake_case_key => simple(:key), :file_path => subtree(:value)) do
+    {
+      key.to_sym => String(value)
+    }
+  end
   rule(:group => subtree(:group_members)) do
     {
-      group_members[0][:group_title].to_sym => OpenStruct.new(group_members[1])
+      group_members[0][:group_title].to_sym => OpenStruct.new(group_members[1..-1].reduce({}, :merge))
     }
   end
 end
@@ -107,12 +112,11 @@ class Config < OpenStruct
 end
 
 def load_config(file_path, overrides=[])
-  parsed_output = figgy_parse(
-    File.read(file_path), overrides
-  )
   Config.new(
     figgy_transform(
-      parsed_output
+      figgy_parse(
+        File.read(file_path), overrides
+      )
     )
   )
 end
