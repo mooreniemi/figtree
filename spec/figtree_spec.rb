@@ -4,7 +4,6 @@ require 'parslet/rig/rspec'
 describe Figtree do
   let(:parser) { Figtree.new }
   it 'can parse newlines' do
-    # note Ruby needs you to use "" to make \n work
     expect(parser.newline).to parse("\n")
   end
   it 'can parse group names' do
@@ -116,6 +115,7 @@ describe '#load_config' do
   end
 
   it 'can parse a group and provide dot notation access' do
+    puts load_config(settings_path)
     expect(load_config(settings_path).common).to eq(common)
   end
   it 'can parse the overrides correctly' do
