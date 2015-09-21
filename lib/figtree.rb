@@ -87,6 +87,10 @@ class Figtree < Parslet::Parser
   root(:group)
 end
 
+class Transformer < Parslet::Transform
+  rule(:number => simple(:x)) { Integer(x) }
+end
+
 class Config < OpenStruct
   def initialize(hash = {})
     super
@@ -128,8 +132,7 @@ def massage_the(array_blob)
 end
 
 def figgy_parse(str, overrides=[])
-  figgy = Figtree.new
-  figgy.parse(str)
+  Figtree.new.parse(str)
 rescue Parslet::ParseFailed => failure
   puts failure.cause.ascii_tree
 end

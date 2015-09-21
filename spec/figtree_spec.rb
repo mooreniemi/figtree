@@ -106,3 +106,12 @@ describe Figtree do
     end
   end
 end
+
+describe Transformer do
+  let(:tree) do
+    Figtree.new.parse("[common]\nbasic_size_limit = 26214400\nstudent_size_limit = 52428800\n")
+  end
+  it 'can apply an int type conversion' do
+    expect(Transformer.new.apply(tree)).to eq(nil)
+  end
+end
