@@ -77,41 +77,53 @@ describe Figtree do
       expect(parser.group).to parse(multi_group)
     end
 
-    let(:common) do
-      OpenStruct.new(
-        :basic_size_limit => 26214400,
-        :student_size_limit => 52428800,
-        :paid_users_size_limit => 2147483648,
-        :path => "/srv/var/tmp/",
-      )
-    end
-
-    let(:common_with_override) do
-      OpenStruct.new(
-        :basic_size_limit => 26214400,
-        :student_size_limit => 52428800,
-        :paid_users_size_limit => 2147483648,
-        :path => "/srv/tmp/",
-      )
-    end
-
-    it 'can parse a group and provide dot notation access' do
-      expect(load_config(settings_path).common).to eq(common)
-    end
-    it 'can parse the overrides correctly' do
-      expect(load_config(settings_path, [:production]).common).to eq(common_with_override) 
-    end
-    xit 'can parse the whole Kebab without any misunderstandings' do
-      expect(load_config(settings_path)).to eq(nil)
-    end
   end
 end
 
 describe Transformer do
   let(:tree) do
-    Figtree.new.parse("[common]\nbasic_size_limit = 26214400\nstudent_size_limit = 52428800\n")
+    Figtree.new.parse("[common]\nbasic_size_limit = 26214400\n")
   end
   it 'can apply an int type conversion' do
-    expect(Transformer.new.apply(tree)).to eq(nil)
+    expect(Transformer.new.apply(tree)).to eq(
+      [
+        {
+          common: OpenStruct.new({basic_size_limit: 26214400})
+        }
+      ]
+    )
+  end
+end
+
+describe '#load_config' do
+  let(:settings_path) { 'settings.conf' }
+  let(:common) do
+    OpenStruct.new(
+      :basic_size_limit => 26214400,
+      :student_size_limit => 52428800,
+      :paid_users_size_limit => 2147483648,
+      :path => "/srv/var/tmp/",
+    )
+  end
+
+  let(:common_with_override) do
+    OpenStruct.new(
+      :basic_size_limit => 26214400,
+      :student_size_limit => 52428800,
+      :paid_users_size_limit => 2147483648,
+      :path => "/srv/tmp/",
+    )
+  end
+
+  it 'can parse a group and provide dot notation access' do
+    expect(load_config(settings_path).common).to eq(common)
+  end
+  it 'can parse the overrides correctly' do
+    pending('where is best place to override')
+    expect(load_config(settings_path, [:production]).common).to eq(common_with_override) 
+  end
+  it 'can parse the whole Kebab without any misunderstandings' do
+    pending('mostly using this to observe stdout')
+    expect(load_config(settings_path)).to eq(nil)
   end
 end

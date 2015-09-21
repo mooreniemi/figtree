@@ -88,51 +88,33 @@ class Figtree < Parslet::Parser
 end
 
 class Transformer < Parslet::Transform
-  rule(:number => simple(:x)) { Integer(x) }
+  rule(:snake_case_key => simple(:key), :number => subtree(:value)) do
+    {key.to_sym => Integer(value)}
+  end
+  rule(:group => subtree(:group_members)) do
+    {
+      group_members[0][:group_title].to_sym => OpenStruct.new(group_members[1])
+    }
+  end
 end
 
 class Config < OpenStruct
   def initialize(hash = {})
-    super
+    super(hash.reduce({}, :merge))
   end
 end
 
 def load_config(file_path, overrides=[])
   parsed_output = figgy_parse(File.read(file_path), overrides)
-  Config.new(massage_the(parsed_output))
-end
-
-def massage_the(array_blob)
-  monster_hash = Hash.new
-  array_blob.each do |hash|
-    title = hash[:group][0].delete(:group_title)
-    tuples = hash[:group].select {|e| e.size == 2}
-
-    tuples.each do |tuple|
-      tuple.keys.each do |key|
-        case key
-        when :snake_case_key
-          tuple[key] = tuple[key].to_sym
-        when :file_path
-          tuple[key] = tuple[key].to_s
-        when :number
-          tuple[key] = tuple[key].to_i
-        when :array
-          tuple[key] = tuple[key]
-        end
-      end
-    end
-
-    # now that they're properly typed, we can lose the type info
-    attrs_hash = tuples.
-      inject(Hash.new) {|memo, tuple| memo.merge!(Hash[*tuple.values])}
-    monster_hash[title] = OpenStruct.new(attrs_hash)
-  end
-  monster_hash
+  Config.new(figgy_transform(parsed_output))
 end
 
 def figgy_parse(str, overrides=[])
   Figtree.new.parse(str)
 rescue Parslet::ParseFailed => failure
   puts failure.cause.ascii_tree
+end
+
+def figgy_transform(tree)
+  Transformer.new.apply(tree)
 end
