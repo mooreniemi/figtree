@@ -76,8 +76,32 @@ describe Figtree do
     it 'can parse multiple groups' do
       expect(parser.group).to parse(multi_group)
     end
-    it 'can parse the whole Kebab without any misunderstandings' do
-      # going to STDOUT
+
+    let(:common) do
+      OpenStruct.new(
+        :basic_size_limit => 26214400,
+        :student_size_limit => 52428800,
+        :paid_users_size_limit => 2147483648,
+        :path => "/srv/var/tmp/",
+      )
+    end
+
+    let(:common_with_override) do
+      OpenStruct.new(
+        :basic_size_limit => 26214400,
+        :student_size_limit => 52428800,
+        :paid_users_size_limit => 2147483648,
+        :path => "/srv/tmp/",
+      )
+    end
+
+    it 'can parse a group and provide dot notation access' do
+      expect(load_config(settings_path).common).to eq(common)
+    end
+    it 'can parse the overrides correctly' do
+      expect(load_config(settings_path, [:production]).common).to eq(common_with_override) 
+    end
+    xit 'can parse the whole Kebab without any misunderstandings' do
       expect(load_config(settings_path)).to eq(nil)
     end
   end
