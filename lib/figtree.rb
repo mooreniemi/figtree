@@ -46,7 +46,7 @@ class Figtree < Parslet::Parser
   end
 
   rule(:snakey_option_key) do
-    snake_case_key.as(:snake_case_key) >>
+    snake_case_key.as(:key_to_be_overridden) >>
     str('<') >>
     snake_case_key.as(:optional_key) >>
     str('>')
@@ -88,6 +88,13 @@ class Figtree < Parslet::Parser
 end
 
 class Transformer < Parslet::Transform
+  attr_accessor :overrides
+
+  def initialize(overrides = [], &block)
+    @overrides = overrides
+    super(&block)
+  end
+
   rule(:snake_case_key => simple(:key), :number => subtree(:value)) do
     {
       key.to_sym => Integer(value)
@@ -97,6 +104,20 @@ class Transformer < Parslet::Transform
     {
       key.to_sym => String(value)
     }
+  end
+  rule(
+    :key_to_be_overridden => subtree(:a),
+    :optional_key => subtree(:b),
+    :file_path => subtree(:c)
+  ) do
+    if !@overrides.nil? && @overrides.include?(b[:snake_case_key])
+      {
+        a[:snake_case_key] => String(c)
+      }
+    else
+      {
+      }
+    end
   end
   rule(:group => subtree(:group_members)) do
     {
@@ -115,20 +136,22 @@ def load_config(file_path, overrides=[])
   Config.new(
     figgy_transform(
       figgy_parse(
-        File.read(file_path), overrides
-      )
+        File.read(file_path)
+      ),
+      overrides
     )
   )
 end
 
-def figgy_parse(str, overrides=[])
+def figgy_parse(str)
   Figtree.new.parse(str)
 rescue Parslet::ParseFailed => failure
   puts failure.cause.ascii_tree
 end
 
-def figgy_transform(tree)
-  Transformer.new.apply(tree)
+def figgy_transform(tree, overrides = [])
+  Transformer.new(overrides).apply(tree)
 rescue
   puts 'failed transform'
+  {}
 end
