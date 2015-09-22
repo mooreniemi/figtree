@@ -33,7 +33,9 @@ class Figtree < Parslet::Parser
   end
 
   rule(:array) do
-    (match('[a-zA-Z]').repeat(1) >> (str(',') >> match('[a-zA-Z]').repeat(1)).repeat.maybe).maybe.as(:array) >>
+    (match('[a-zA-Z]').repeat(1) >>
+     (str(',') >>
+      match('[a-zA-Z]').repeat(1)).repeat.maybe).maybe.as(:array) >>
     (str(',') | newline | eof)
   end
 
@@ -95,9 +97,27 @@ class Transformer < Parslet::Transform
     super(&block)
   end
 
+  # TODO these could largely be consolidated with some rearrangement
+  # TODO subtree is considered too flexible, switch to simple(:x)?
   rule(:snake_case_key => simple(:key), :number => subtree(:value)) do
     {
       key.to_sym => Integer(value)
+    }
+  end
+  rule(:snake_case_key => simple(:key), :array => subtree(:value)) do
+    {
+      key.to_sym => Array(value)
+    }
+  end
+  rule(:snake_case_key => simple(:key), :string => subtree(:value)) do
+    {
+      key.to_sym => String(value)
+    }
+  end
+  rule(:snake_case_key => simple(:key), :boolean => simple(:value)) do
+    {
+      # Boolean(value) fails
+      key.to_sym => String(value)
     }
   end
   rule(:snake_case_key => simple(:key), :file_path => subtree(:value)) do
@@ -120,18 +140,23 @@ class Transformer < Parslet::Transform
     end
   end
   rule(:group => subtree(:group_members)) do
+    group_title = group_members[0][:group_title].to_sym
+    group_values = OpenStruct.new(group_members[1..-1].reduce({}, :merge))
     {
-      group_members[0][:group_title].to_sym => OpenStruct.new(group_members[1..-1].reduce({}, :merge))
+      group_title => group_values
     }
   end
 end
 
 class Config < OpenStruct
-  def initialize(hash = {})
-    super(hash.reduce({}, :merge))
+  def initialize(array = [])
+    # TODO move the reduction to #load_config
+    # TODO then this class can be a shell
+    super(array.reduce({}, :merge))
   end
 end
 
+# TODO this feels like a class level method to an undefined class
 def load_config(file_path, overrides=[])
   Config.new(
     figgy_transform(
@@ -143,6 +168,7 @@ def load_config(file_path, overrides=[])
   )
 end
 
+# TODO these would be private methods to help the above class method
 def figgy_parse(str)
   Figtree.new.parse(str)
 rescue Parslet::ParseFailed => failure
@@ -153,5 +179,5 @@ def figgy_transform(tree, overrides = [])
   Transformer.new(overrides).apply(tree)
 rescue
   puts 'failed transform'
-  {}
+  {} # returning hash just to preserve stack trace
 end

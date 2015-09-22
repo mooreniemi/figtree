@@ -51,7 +51,7 @@ describe Figtree do
   end
 
   describe "using the settings.conf file for input" do
-    let(:settings_path) { 'settings.conf' }
+    let(:settings_path) { 'spec/settings.conf' }
     let(:multi_group) {
       [
         "[common]",
@@ -95,7 +95,7 @@ describe Transformer do
 end
 
 describe '#load_config' do
-  let(:settings_path) { 'settings.conf' }
+  let(:settings_path) { 'spec/settings.conf' }
   let(:common) do
     OpenStruct.new(
       :basic_size_limit => 26214400,
@@ -114,6 +114,41 @@ describe '#load_config' do
     )
   end
 
+  let(:the_whole_kebab) do
+    Config.new(
+      [
+        {
+          common: OpenStruct.new(
+            {
+              :basic_size_limit => 26214400,
+              :student_size_limit=> 52428800,
+              :paid_users_size_limit=> 2147483648,
+              :path=> "/srv/var/tmp/"
+            }
+          )
+        },
+        {
+          ftp: OpenStruct.new(
+            {
+              :name => "hello there, ftp uploading",
+              :path => "/tmp/",
+              :enabled => "no"
+            }
+          )
+        },
+        {
+          http: OpenStruct.new(
+            {
+              :name => "http uploading",
+              :path => "/tmp/",
+              :params => ["array,of,values"]
+            }
+          )
+        }
+      ]
+    )
+  end
+
   it 'can parse a group and provide dot notation access' do
     expect(load_config(settings_path).common).to eq(common)
   end
@@ -122,7 +157,6 @@ describe '#load_config' do
       to eq(common_with_override)
   end
   it 'can parse the whole Kebab without any misunderstandings' do
-    pending('mostly using this to observe stdout')
-    expect(load_config(settings_path)).to eq(nil)
+    expect(load_config(settings_path)).to eq(the_whole_kebab)
   end
 end
