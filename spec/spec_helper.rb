@@ -1,6 +1,7 @@
 require 'bundler/setup'
 Bundler.setup
 
+require 'pry'
 require 'ostruct'
 require 'parslet'
 require 'parslet/rig/rspec'

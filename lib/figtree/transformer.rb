@@ -1,7 +1,6 @@
 require 'parslet'
 require 'ostruct'
 require 'wannabe_bool'
-require 'pry'
 
 module Figtree
   # once you have an AST, you can do type transformations
