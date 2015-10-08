@@ -50,7 +50,7 @@ describe Figtree do
               {
                 :name => "http uploading",
                 :path => "/tmp/",
-                :params => ["array,of,values"]
+                :params => ["array", "of", "values"]
               }
             )
           }

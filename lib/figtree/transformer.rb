@@ -20,7 +20,7 @@ module Figtree
     end
     rule(:snake_case_key => simple(:key), :array => subtree(:value)) do
       {
-        key.to_sym => Array(value)
+        key.to_sym => String(value).split(",")
       }
     end
     rule(:snake_case_key => simple(:key), :string => subtree(:value)) do
