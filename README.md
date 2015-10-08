@@ -13,6 +13,9 @@ A typical `.ini` file takes slightly less than 0.02s to be parsed, transformed, 
     config = Figtree.load_config('spec/support/settings.conf')
     config.common.basic_size_limit
     => 26214400
+    # also good
+    # config[:common]
+    # config['common']
 
 ## development
 ### installation
