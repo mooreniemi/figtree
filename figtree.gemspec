@@ -15,6 +15,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'parslet', '~> 1.7'
   gem.add_development_dependency 'rspec', '~> 3.0', '>= 3.0.0'
+  gem.add_development_dependency 'simplecov'
 
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
