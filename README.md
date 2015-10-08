@@ -23,6 +23,5 @@ A typical `.ini` file takes slightly less than 0.02s to be parsed, transformed, 
 
 ### TODO
 - refactor marked TODO listings in files (mostly refactoring to generic)
-- allow indifferent access? (not just dot notation but allow hash access)
 - add more unit test coverage to Transformer
 - seems like Parslet doesn't have a `TransformFailed` error format, worth adding one?
