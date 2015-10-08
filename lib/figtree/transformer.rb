@@ -1,5 +1,6 @@
 require 'parslet'
 require 'ostruct'
+require 'wannabe_bool'
 
 module Figtree
   # once you have an AST, you can do type transformations
@@ -30,8 +31,7 @@ module Figtree
     end
     rule(:snake_case_key => simple(:key), :boolean => simple(:value)) do
       {
-        # Boolean(value) fails
-        key.to_sym => String(value)
+        key.to_sym => String(value).to_b
       }
     end
     rule(:snake_case_key => simple(:key), :file_path => subtree(:value)) do

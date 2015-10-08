@@ -3,6 +3,7 @@ PATH
   specs:
     figtree (0.0.1)
       parslet (~> 1.7)
+      wannabe_bool
 
 GEM
   remote: https://rubygems.org/
@@ -31,6 +32,7 @@ GEM
       json (~> 1.8)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
+    wannabe_bool (0.2.0)
 
 PLATFORMS
   ruby

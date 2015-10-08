@@ -41,7 +41,7 @@ describe Figtree do
               {
                 :name => "hello there, ftp uploading",
                 :path => "/tmp/",
-                :enabled => "no"
+                :enabled => false
               }
             )
           },
