@@ -6,8 +6,8 @@ Gem::Specification.new do |gem|
   gem.version = Figtree::VERSION
   gem.date    = Date.today.to_s
 
-  gem.summary = "an awesome gem"
-  gem.description = "extended description"
+  gem.summary = "A parser and transformer for loading `.ini` files into Ruby dot notation accessible objects."
+  gem.description = "See README.md"
 
   gem.authors  = ['Alex Moore-Niemi']
   gem.email    = 'moore.niemi@gmail.com'

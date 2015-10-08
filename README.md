@@ -1,15 +1,27 @@
-## Figtree
-A parser and transformer for loading `.ini` files into Ruby dot notation accessible objects.
+# Figtree
+## about
+A parser and transformer for loading `.ini` files into Ruby dot notation accessible objects. `.ini` is not a standardized format. But the parser and transformer are easy to extend, unlike regex. :)
 
+## performance
 A typical `.ini` file takes slightly less than 0.02 to be parsed, transformed, and loaded.
 
-# installation
+## installation
+`gem install figtree`
+
+## usage
+`require 'figtree'`
+`config = Figtree.load_config('spec/support/settings.conf')`
+`config.common.basic_size_limit`
+`=> 26214400`
+
+# development
+## installation
 `bundle install`
 
-# tests
+## tests
 `rspec spec/`
 
-# TODO
+### TODO
 - refactor marked TODO listings in files (mostly refactoring to generic)
 - allow indifferent access? (not just dot notation but allow hash access)
 - add more unit test coverage to Transformer
