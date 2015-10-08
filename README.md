@@ -9,10 +9,10 @@ A typical `.ini` file takes slightly less than 0.02s to be parsed, transformed, 
 `gem install figtree`
 
 ## usage
-`require 'figtree'`
-`config = Figtree.load_config('spec/support/settings.conf')`
-`config.common.basic_size_limit`
-`=> 26214400`
+  require 'figtree'
+  config = Figtree.load_config('spec/support/settings.conf')
+  config.common.basic_size_limit
+  => 26214400
 
 # development
 ## installation
