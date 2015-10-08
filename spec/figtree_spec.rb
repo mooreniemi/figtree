@@ -1,4 +1,6 @@
 require 'spec_helper'
+# for the performance test at bottom
+require 'benchmark'
 
 describe Figtree do
   describe '#load_config' do
@@ -65,6 +67,12 @@ describe Figtree do
     end
     it 'can parse the whole Kebab without any misunderstandings' do
       expect(Figtree.load_config(settings_path)).to eq(the_whole_kebab)
+    end
+
+    it 'can parse the whole ini file quickly' do
+      Benchmark.realtime do
+        Figtree.load_config(settings_path)
+      end.should be < 0.02
     end
   end
 end
