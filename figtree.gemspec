@@ -13,8 +13,8 @@ Gem::Specification.new do |gem|
   gem.email    = 'moore.niemi@gmail.com'
   gem.homepage = 'https://github.com/mooreniemi/figtree'
 
-  gem.add_dependency('parslet')
-  gem.add_development_dependency('rspec', [">= 3.0.0"])
+  gem.add_runtime_dependency 'parslet', '~> 1.7'
+  gem.add_development_dependency 'rspec', '~> 3.0', '>= 3.0.0'
 
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
