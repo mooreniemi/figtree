@@ -6,7 +6,7 @@ describe Figtree do
   describe '#load_config' do
     let(:settings_path) { 'spec/support/settings.conf' }
     let(:common) do
-      OpenStruct.new(
+      Figtree::Subgroup.new(
         :basic_size_limit => 26214400,
         :student_size_limit => 52428800,
         :paid_users_size_limit => 2147483648,
@@ -15,7 +15,7 @@ describe Figtree do
     end
 
     let(:common_with_override) do
-      OpenStruct.new(
+      Figtree::Subgroup.new(
         :basic_size_limit => 26214400,
         :student_size_limit => 52428800,
         :paid_users_size_limit => 2147483648,
@@ -27,7 +27,7 @@ describe Figtree do
       Figtree::IniConfig.new(
         [
           {
-            common: OpenStruct.new(
+            common: Figtree::Subgroup.new(
               {
                 :basic_size_limit => 26214400,
                 :student_size_limit=> 52428800,
@@ -37,7 +37,7 @@ describe Figtree do
             )
           },
           {
-            ftp: OpenStruct.new(
+            ftp: Figtree::Subgroup.new(
               {
                 :name => "hello there, ftp uploading",
                 :path => "/tmp/",
@@ -46,7 +46,7 @@ describe Figtree do
             )
           },
           {
-            http: OpenStruct.new(
+            http: Figtree::Subgroup.new(
               {
                 :name => "http uploading",
                 :path => "/tmp/",
@@ -54,7 +54,7 @@ describe Figtree do
               }
             )
           }
-        ]
+        ].reduce({}, :merge!)
       )
     end
 
@@ -74,7 +74,7 @@ describe Figtree do
         Benchmark.realtime do
           Figtree.load_config(settings_path)
         end
-      ).to be < 0.02
+      ).to be < 0.014
     end
   end
 end

@@ -15,7 +15,7 @@ module Figtree
       expect(Transformer.new.apply(int_tree)).to eq(
         [
           {
-            common: OpenStruct.new({basic_size_limit: 26214400})
+            common: Subgroup.new({basic_size_limit: 26214400})
           }
         ]
       )
@@ -24,7 +24,7 @@ module Figtree
       expect(Transformer.new.apply(arr_tree)).to eq(
         [
           {
-            http: OpenStruct.new(params: ["array", "of", "values"])
+            http: Subgroup.new(params: ["array", "of", "values"])
           }
         ]
       )
@@ -33,7 +33,7 @@ module Figtree
       expect(Transformer.new.apply(bool_tree)).to eq(
         [
           {
-            ftp: OpenStruct.new(enabled: false)
+            ftp: Subgroup.new(enabled: false)
           }
         ]
       )

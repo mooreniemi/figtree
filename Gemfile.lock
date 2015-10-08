@@ -3,7 +3,7 @@ PATH
   specs:
     figtree (0.0.1)
       parslet (~> 1.7)
-      wannabe_bool
+      wannabe_bool (~> 0.2)
 
 GEM
   remote: https://rubygems.org/
@@ -40,7 +40,7 @@ PLATFORMS
 DEPENDENCIES
   figtree!
   rspec (~> 3.0, >= 3.0.0)
-  simplecov
+  simplecov (~> 0.10)
 
 BUNDLED WITH
    1.10.6

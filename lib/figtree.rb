@@ -4,13 +4,14 @@ require 'figtree/ini_config'
 
 module Figtree
   def self.load_config(file_path, overrides=[])
+    parsed_subgroups = figgy_transform(
+      figgy_parse(
+        File.read(file_path)
+      ),
+      overrides
+    )
     IniConfig.new(
-      figgy_transform(
-        figgy_parse(
-          File.read(file_path)
-        ),
-        overrides
-      )
+      parsed_subgroups.reduce({}, :merge!)
     )
   end
 

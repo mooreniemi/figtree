@@ -55,7 +55,7 @@ module Figtree
     end
     rule(:group => subtree(:group_members)) do
       group_title = group_members[0][:group_title].to_sym
-      group_values = OpenStruct.new(group_members[1..-1].reduce({}, :merge))
+      group_values = Subgroup.new(group_members[1..-1].reduce({}, :merge!))
       {
         group_title => group_values
       }
