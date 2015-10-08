@@ -70,9 +70,11 @@ describe Figtree do
     end
 
     it 'can parse the whole ini file quickly' do
-      Benchmark.realtime do
-        Figtree.load_config(settings_path)
-      end.should be < 0.02
+      expect(
+        Benchmark.realtime do
+          Figtree.load_config(settings_path)
+        end
+      ).to be < 0.02
     end
   end
 end
