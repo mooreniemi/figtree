@@ -14,14 +14,14 @@ A typical `.ini` file takes slightly less than 0.02s to be parsed, transformed, 
     config.common.basic_size_limit
     => 26214400
 
-# development
-## installation
+## development
+### installation
 `bundle install`
 
-## tests
+### tests
 `rspec spec/`
 
-### TODO
+#### TODO
 - refactor marked TODO listings in files (mostly refactoring to generic)
 - add more unit test coverage to Transformer
 - seems like Parslet doesn't have a `TransformFailed` error format, worth adding one?
