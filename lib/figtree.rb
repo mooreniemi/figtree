@@ -23,7 +23,7 @@ module Figtree
   end
 
   def self.figgy_transform(tree, overrides = [])
-    Transformer.new(overrides).apply(tree)
+    Transformer.new.apply(tree, overrides: overrides)
   rescue
     puts 'failed transform'
     {} # returning hash just to preserve stack trace

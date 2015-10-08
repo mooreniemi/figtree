@@ -18,6 +18,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'wannabe_bool', '~> 0.2'
   gem.add_development_dependency 'rspec', '~> 3.0', '>= 3.0.0'
   gem.add_development_dependency 'simplecov', '~> 0.10'
+  gem.add_development_dependency 'pry'
 
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
