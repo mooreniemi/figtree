@@ -14,8 +14,17 @@ A typical `.ini` file takes slightly less than 0.02s to be parsed, transformed, 
     config.common.basic_size_limit
     => 26214400
     # also good
-    # config[:common]
-    # config['common']
+    config[:common]["paid_users_size_limit"]
+    => 2147483648
+    # also also good :)
+    config.common[:paid_users_size_limit]
+    => 2147483648
+    # and overrides? we got overrides
+    overridden_config = Figtree.load_config('spec/support/settings.conf', [:production])
+    config.ftp.path
+    => "/tmp/"
+    overridden_config.ftp.path
+    => "/srv/var/tmp/"
 
 ## development
 ### installation
