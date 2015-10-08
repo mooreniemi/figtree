@@ -1,6 +1,6 @@
-# Figtree
+# Figtree 🌳
 ## about
-A parser and transformer for loading `.ini` files into Ruby dot notation accessible objects. `.ini` is not a standardized format. But the parser and transformer are easy to extend, unlike regex. :)
+A parser and transformer for loading `.ini` files into Ruby dot notation accessible objects. `.ini` is not a standardized format. But the parser and transformer are easy to extend, unlike regex. :) And it's at 96% LOC coverage.
 
 ## performance
 A typical `.ini` file takes slightly less than 0.02s to be parsed, transformed, and loaded.
