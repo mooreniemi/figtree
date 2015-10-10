@@ -69,13 +69,19 @@ describe Figtree do
       expect(Figtree::IniConfig.new(settings_path)).to eq(the_whole_kebab)
     end
 
+    it 'can parse the wiki example' do
+			wiki_example = Figtree::IniConfig.new('spec/support/wiki_example.ini')
+      expect(wiki_example.database.server).to_not be_nil
+    end
+
     context "performance" do
       it 'can parse the whole ini file quickly' do
         expect(
           Benchmark.realtime do
             Figtree::IniConfig.new(settings_path)
           end
-        ).to be < 0.014
+        ).to be < 0.02
+				# without ip_address parsing this was under 0.014 :(
       end
     end
 

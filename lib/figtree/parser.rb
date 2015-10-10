@@ -1,21 +1,29 @@
 require 'parslet'
+require 'figtree/ip_rules'
 
 module Figtree
   # ConFIG into a Tree :)
   class Parser < Parslet::Parser
+    include IPv4
+    include IPv6
+
     rule(:eof) { any.absent? }
     rule(:group_title) { match('[a-zA-Z]').repeat(1) }
-    rule(:newline)  { match("\\n").repeat(1) >> match("\\r").maybe }
-    rule(:space) { match('\s').repeat(0) }
+    rule(:space) { match("\s").repeat(0) }
+    rule(:newline) { match("\n") >> match("\r").maybe }
+
     rule(:grouper) do
+      newline.maybe >>
       str('[') >>
       group_title.as(:group_title) >>
       str(']')
     end
 
     rule(:comment) do
-      str(';') >>
-      (newline.absent? >> any).repeat
+      # comments go uncaptured
+      (str(';') >>
+       (newline.absent? >> any).repeat) >>
+      newline.maybe
     end
 
     rule(:string) do
@@ -25,11 +33,16 @@ module Figtree
     end
 
     rule(:boolean) do
+      # expand this check
       (str('no') | str('yes')).as(:boolean)
     end
 
     rule(:number) do
       match('[0-9]').repeat(1).as(:number)
+    end
+
+    rule(:ip_address) do
+      (ipv4 | ipv6).as(:ip_address)
     end
 
     rule(:array) do
@@ -59,7 +72,16 @@ module Figtree
       space >>
       str("=") >>
       space >>
-      (number | boolean | array | snake_case_key | file_path | string)
+      # this ordering matters
+      # we are roughly moving from more
+      # to less specific
+      (ip_address |
+       number |
+       boolean |
+       array |
+       snake_case_key |
+       file_path |
+       string)
     end
 
     rule(:override_assignment) do
@@ -86,6 +108,12 @@ module Figtree
       repeat.maybe
     end
 
-    root(:group)
+    rule(:comment_or_group) do
+      comment.maybe >>
+      newline.maybe >>
+      group.maybe
+    end
+
+    root(:comment_or_group)
   end
 end

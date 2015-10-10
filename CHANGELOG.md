@@ -1,0 +1,5 @@
+- Version 0.0.1: initial set up
+- Version 0.0.2: some bug fixes, overrides
+- Version 1.0.0: moving away from #load_conifg to just #new
+- Version 1.0.1: refactoring in IniConfig
+- Version 1.2.0: adding support for pre-group comments and ip addresses

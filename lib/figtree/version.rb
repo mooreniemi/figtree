@@ -1,3 +1,5 @@
 module Figtree
-  VERSION = "1.0.1"
+	# for reference see
+	# http://guides.rubygems.org/patterns/#semantic-versioning
+  VERSION = "1.2.0"
 end

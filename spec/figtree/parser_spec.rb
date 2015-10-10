@@ -10,7 +10,13 @@ module Figtree
       expect(parser.grouper).to parse('[common]')
     end
     it 'can parse comments' do
-      expect(parser.comment).to parse('; This is a comment\n')
+      expect(parser.comment).to parse("; This is a comment\n")
+      expect(parser.comment).to parse("; last modified 1 April 2001 by John Doe\n")
+      comment_first = File.open('spec/support/wiki_example.ini', &:readline)
+      expect(parser.comment).to parse(comment_first)
+    end
+    it 'can parse comments then groups' do
+      expect(parser.comment_or_group).to parse("; comment\n[groop]\nassignment = present")
     end
     it 'can parse snake_case keys' do
       expect(parser.snake_case_key).to parse('basic_size_limit')
@@ -28,6 +34,13 @@ module Figtree
     end
     it 'can parse numbers' do
       expect(parser.number).to parse("26214400")
+    end
+    it 'can parse ip addresses' do
+      expect(parser.ip_address).to parse("FE80:0000:0000:0000:0202:B3FF:FE1E:8329")
+      expect(parser.ip_address).to parse('111.222.3.4')
+			expect(parser.ip_address).to parse('192.0.2.62')
+      expect(parser.ip_address).to_not parse('f11.222.3.4')
+      expect(parser.ip_address).to_not parse('111.222.3')
     end
     it 'can parse booleans flexibly' do
       expect(parser.boolean).to parse("no")

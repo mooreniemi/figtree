@@ -5,6 +5,7 @@ require 'pry'
 require 'ostruct'
 require 'parslet'
 require 'parslet/rig/rspec'
+require 'parslet/convenience'
 
 require 'simplecov'
 SimpleCov.start
