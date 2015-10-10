@@ -34,6 +34,8 @@ A typical `.ini` file takes slightly less than 0.02s to be parsed, transformed, 
 `rspec spec/`
 
 #### TODO
-- refactor marked TODO listings in files (mostly refactoring to generic)
+- change method signature from Module.class_method to just IniConfig.new(IOObject) ?
+- change override to be single symbol rather than array (do we ever need multiples?)
+- refactor marked TODO listings in files (mostly refactoring to generic in Transformer)
 - add more unit test coverage to Transformer
 - seems like Parslet doesn't have a `TransformFailed` error format, worth adding one?
