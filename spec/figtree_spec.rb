@@ -54,7 +54,7 @@ describe Figtree do
               }
             )
           }
-        ] #.reduce({}, :merge!)
+        ].reduce({}, :merge!)
       )
     end
 
@@ -62,7 +62,7 @@ describe Figtree do
       expect(Figtree::IniConfig.new(settings_path).common).to eq(common)
     end
     it 'can parse the overrides correctly' do
-      expect(Figtree::IniConfig.new(settings_path, [:itscript]).common).
+      expect(Figtree::IniConfig.new(settings_path, :itscript).common).
         to eq(common_with_override)
     end
     it 'can parse the whole Kebab without any misunderstandings' do

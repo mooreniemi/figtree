@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    figtree (0.0.2)
+    figtree (1.0.0)
       parslet (~> 1.7)
       wannabe_bool (~> 0.2)
 

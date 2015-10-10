@@ -1,19 +1,20 @@
 require 'ostruct'
 module Figtree
   class IniConfig < OpenStruct
-    def initialize(file_path, overrides = [])
-      if !file_path.is_a?(String)
-        parsed_subgroups = file_path
+    def initialize(ini, override = :none)
+      # cheat to allow a parsed hash in
+      if ini.is_a?(Hash)
+        parsed_subgroups = ini
       else
         parsed_subgroups = figgy_transform(
           figgy_parse(
-            File.read(file_path)
+            File.read(ini)
           ),
-          overrides
-        )
+          override
+        ).reduce({}, :merge!)
       end
       super(
-        parsed_subgroups.reduce({}, :merge!)
+        parsed_subgroups
       )
     end
 
@@ -27,8 +28,8 @@ module Figtree
         raise
     end
 
-    def figgy_transform(tree, overrides = [])
-      Transformer.new.apply(tree, overrides: overrides)
+    def figgy_transform(tree, override)
+      Transformer.new.apply(tree, override: override)
     rescue => e
       STDERR.puts "\nInvalid transformation rule.\n" +
         "Error: #{e}" +

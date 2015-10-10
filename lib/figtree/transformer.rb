@@ -53,7 +53,7 @@ module Figtree
       :optional_key => subtree(:overriding_key),
       :file_path => subtree(:new_file_path),
     ) do
-      if overrides.include?(overriding_key[:snake_case_key].to_sym)
+      if override.to_sym == overriding_key[:snake_case_key].to_sym
         {
           overridden_key[:snake_case_key] => String(new_file_path)
         }

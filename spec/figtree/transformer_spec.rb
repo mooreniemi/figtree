@@ -45,7 +45,7 @@ module Figtree
         Parser.new.parse("[http]\npath = /srv/\npath<production> = /srv/var/tmp/\n")
       end
       it 'can apply an override' do
-        expect(Transformer.new.apply(override_tree, overrides: [:production])).to eq(
+        expect(Transformer.new.apply(override_tree, override: :production)).to eq(
           [
             {
               http: Subgroup.new(path: '/srv/var/tmp/')
