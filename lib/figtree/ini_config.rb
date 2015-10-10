@@ -3,22 +3,21 @@ module Figtree
   class IniConfig < OpenStruct
     def initialize(ini, override = :none)
       # cheat to allow a parsed hash in
-      if ini.is_a?(Hash)
-        parsed_subgroups = ini
-      else
-        parsed_subgroups = figgy_transform(
-          figgy_parse(
-            File.read(ini)
-          ),
-          override
-        ).reduce({}, :merge!)
-      end
-      super(
-        parsed_subgroups
-      )
+      parsed_subgroups = ini.is_a?(Hash) ?
+        ini : subgroups_from(ini, override)
+      super(parsed_subgroups)
     end
 
     private
+    def subgroups_from(ini_file, override)
+      figgy_transform(
+        figgy_parse(
+          File.read(ini_file)
+        ),
+        override
+      ).reduce({}, :merge!)
+    end
+
     def figgy_parse(str)
       Parser.new.parse(str)
     rescue Parslet::ParseFailed => failure
