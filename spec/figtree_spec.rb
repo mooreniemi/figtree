@@ -80,7 +80,7 @@ describe Figtree do
           Benchmark.realtime do
             Figtree::IniConfig.new(settings_path)
           end
-        ).to be < 0.02
+        ).to be < 0.025
 				# without ip_address parsing this was under 0.014 :(
       end
     end
