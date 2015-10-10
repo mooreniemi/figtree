@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    figtree (0.0.1)
+    figtree (0.0.2)
       parslet (~> 1.7)
       wannabe_bool (~> 0.2)
 
@@ -46,7 +46,7 @@ PLATFORMS
 
 DEPENDENCIES
   figtree!
-  pry
+  pry (~> 0.10)
   rspec (~> 3.0, >= 3.0.0)
   simplecov (~> 0.10)
 
