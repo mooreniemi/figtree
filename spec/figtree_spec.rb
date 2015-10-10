@@ -69,12 +69,29 @@ describe Figtree do
       expect(Figtree.load_config(settings_path)).to eq(the_whole_kebab)
     end
 
-    it 'can parse the whole ini file quickly' do
-      expect(
-        Benchmark.realtime do
-          Figtree.load_config(settings_path)
-        end
-      ).to be < 0.014
+    context "performance" do
+      it 'can parse the whole ini file quickly' do
+        expect(
+          Benchmark.realtime do
+            Figtree.load_config(settings_path)
+          end
+        ).to be < 0.014
+      end
+    end
+
+    context "invalid ini file" do
+      let(:unparseable_config) { 'spec/support/unparseable_settings.conf' }
+      let(:untransformable_config) { 'spec/support/untransformable_settings.conf' }
+      it 'throws ParseFailed if unparseable' do
+        expect { Figtree.load_config(unparseable_config) }.
+          to raise_error(Parslet::ParseFailed)
+      end
+      it 'throws TransformFailed if untransformable' do
+        allow_any_instance_of(String).to receive(:to_b).
+          and_raise(StandardError)
+        expect { Figtree.load_config(untransformable_config) }.
+          to raise_error(Figtree::TransformFailed)
+      end
     end
   end
 end

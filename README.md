@@ -1,6 +1,8 @@
 # Figtree 🌳
 ## about
-A parser and transformer for loading `.ini` files into Ruby dot notation accessible objects. `.ini` is not a standardized format. But the parser and transformer are easy to extend, unlike regex. :) And it's at 97% LOC coverage.
+A parser and transformer for loading `.ini` files into Ruby dot notation accessible objects. `.ini` is not a standardized format. But the parser and transformer are easy to extend, unlike regex. :) And it's at 100% LOC coverage.
+
+If the `.ini` file is invalid, an error will be raised, with the line and char position of the error. If you extend this gem to have more rules, and one of those rules fails to transform, you will have an error raised.
 
 ## performance
 A typical `.ini` file takes slightly less than 0.02s to be parsed, transformed, and loaded.
@@ -34,8 +36,7 @@ A typical `.ini` file takes slightly less than 0.02s to be parsed, transformed, 
 `rspec spec/`
 
 #### TODO
+- give char/line position of transformer failures
 - change method signature from Module.class_method to just IniConfig.new(IOObject) ?
 - change override to be single symbol rather than array (do we ever need multiples?)
 - refactor marked TODO listings in files (mostly refactoring to generic in Transformer)
-- add more unit test coverage to Transformer
-- seems like Parslet doesn't have a `TransformFailed` error format, worth adding one?

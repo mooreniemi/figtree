@@ -19,13 +19,21 @@ module Figtree
   def self.figgy_parse(str)
     Parser.new.parse(str)
   rescue Parslet::ParseFailed => failure
-    puts failure.cause.ascii_tree
+    STDERR.puts "\nInvalid ini file.\n" +
+      "Error: #{failure.cause.ascii_tree}" +
+      "Please correct the file and retry."
+      raise
   end
 
   def self.figgy_transform(tree, overrides = [])
     Transformer.new.apply(tree, overrides: overrides)
-  rescue
-    puts 'failed transform'
-    {} # returning hash just to preserve stack trace
+  rescue => e
+    STDERR.puts "\nInvalid transformation rule.\n" +
+      "Error: #{e}" +
+      "Please correct your transformer rule and retry."
+    raise TransformFailed
+  end
+
+  class TransformFailed < Exception
   end
 end
