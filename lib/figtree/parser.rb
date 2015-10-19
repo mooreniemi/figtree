@@ -26,14 +26,22 @@ module Figtree
       newline.maybe
     end
 
-    rule(:string) do
+    rule(:quoted_string) do
       str('"') >>
-      ((str('\\') >> any) | (str('"').absent? >> any)).repeat.as(:string) >>
+      ((str('\\') >> any) | (str('"').absent? >> any)).repeat >>
       str('"')
     end
 
+    rule(:unquoted_string) do
+      (newline.absent? >> any).repeat
+    end
+
+    rule(:string) do
+      (quoted_string | unquoted_string).as(:string)
+    end
+
     rule(:boolean) do
-      # expand this check
+      # TODO expand this check
       (str('no') | str('yes')).as(:boolean)
     end
 
@@ -67,21 +75,24 @@ module Figtree
       str('>')
     end
 
+    rule(:value) do
+      # this ordering matters
+      # we are roughly moving from more
+      # to less specific
+      ( ip_address |
+       number |
+       boolean |
+       array |
+       file_path |
+       string )
+    end
+
     rule(:assignment) do
       snake_case_key >>
       space >>
       str("=") >>
       space >>
-      # this ordering matters
-      # we are roughly moving from more
-      # to less specific
-      (ip_address |
-       number |
-       boolean |
-       array |
-       snake_case_key |
-       file_path |
-       string)
+      value
     end
 
     rule(:override_assignment) do
@@ -89,7 +100,7 @@ module Figtree
       space >>
       str("=") >>
       space >>
-      file_path
+      value
     end
 
     rule(:assignment_or_comment) do
