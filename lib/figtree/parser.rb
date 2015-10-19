@@ -9,7 +9,8 @@ module Figtree
 
     rule(:eof) { any.absent? }
     rule(:group_title) { match('[a-zA-Z]').repeat(1) }
-    rule(:space) { match("\s").repeat(0) }
+    rule(:space) { (match("\s") | str(' ')) }
+    rule(:spaces) { space.repeat }
     rule(:newline) { match("\n") >> match("\r").maybe }
 
     rule(:grouper) do
@@ -23,7 +24,7 @@ module Figtree
       # comments go uncaptured
       (str(';') >>
        (newline.absent? >> any).repeat) >>
-      newline.maybe
+      (eof | newline)
     end
 
     rule(:quoted_string) do
@@ -33,7 +34,7 @@ module Figtree
     end
 
     rule(:unquoted_string) do
-      (newline.absent? >> any).repeat
+      (newline.absent? >> any).repeat >> newline
     end
 
     rule(:string) do
@@ -53,11 +54,23 @@ module Figtree
       (ipv4 | ipv6).as(:ip_address)
     end
 
+    rule(:at_least_one_char) do
+      match('[a-zA-Z]').repeat(1)
+    end
+
     rule(:array) do
-      (match('[a-zA-Z]').repeat(1) >>
-       (str(',') >>
-        match('[a-zA-Z]').repeat(1)).repeat.maybe).maybe.as(:array) >>
-      (str(',') | newline | eof)
+      (
+        # minimum array
+        at_least_one_char >>
+        str(',') >> spaces.maybe >>
+        at_least_one_char >>
+        (
+          # extending elementwise
+          str(',') >> spaces.maybe >>
+          at_least_one_char
+        ).repeat.maybe
+      ).as(:array) >>
+      (newline | eof)
     end
 
     rule(:file_path) do

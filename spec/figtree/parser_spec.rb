@@ -26,21 +26,28 @@ module Figtree
 			expect(parser.string).to parse('"hello there, ftp uploading"')
 		end
 		it 'can parse unquoted strings' do
-			#parser.parse_with_debug("[Network]\nhostname = fff f ffff\n")
-			expect(parser.unquoted_string).to parse("fffffff ffff f f ffffff\n")
+      string = "a b\n"#"a bb ccc dddd eeeee ffffff\n"
+			#parser.parse_with_debug("[Network]\nhostname = #{string}")
+			expect(parser.unquoted_string).to parse(string)
 		end
 
 		it 'can parse arrays' do
-			expect(parser.array).to parse("a,")
+      expect(parser.array).to_not parse(',,')
+      expect(parser.array).to_not parse("a\n")
+			expect(parser.array).to_not parse("a,")
+			expect(parser.array).to parse("a,b\n")
 			expect(parser.array).to parse("a,b")
 			expect(parser.array).to parse("a,b,c\n")
-			expect(parser.array).to_not parse(',,')
+			expect(parser.array).to parse("words, with, spaces, after\n")
+			expect(parser.array).to parse("several,diff,words,only,nonumbers\n")
 			expect(parser.array).to parse("array,of,values\n")
 			expect(parser.array).to parse("array,of,values")
 		end
+
 		it 'can parse numbers' do
 			expect(parser.number).to parse("26214400")
 		end
+
 		it 'can parse ip addresses' do
 			expect(parser.ip_address).to parse("FE80:0000:0000:0000:0202:B3FF:FE1E:8329")
 			expect(parser.ip_address).to parse('111.222.3.4')
