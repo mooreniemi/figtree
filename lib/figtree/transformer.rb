@@ -16,7 +16,8 @@ module Figtree
 		end
 		rule(:snake_case_key => simple(:key), :string => simple(:value)) do
 			{
-				key.to_sym => String(value)
+        # remove whitespace after cast
+        key.to_sym => String(value).strip
 			}
 		end
 		rule(:snake_case_key => simple(:key), :file_path => simple(:value)) do

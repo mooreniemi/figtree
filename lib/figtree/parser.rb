@@ -74,7 +74,13 @@ module Figtree
     end
 
     rule(:file_path) do
-      match('[/a-z/]').repeat(1).as(:file_path)
+      (
+        (
+          str('/') >>
+          at_least_one_char
+        ).repeat >>
+        str('/').maybe
+      ).as(:file_path)
     end
 
     rule(:snake_case_key) do
@@ -100,20 +106,21 @@ module Figtree
        string )
     end
 
+    rule(:equals_value) do
+      space.maybe >>
+      str("=") >>
+      space.maybe >>
+      value
+    end
+
     rule(:assignment) do
       snake_case_key >>
-      space >>
-      str("=") >>
-      space >>
-      value
+      equals_value
     end
 
     rule(:override_assignment) do
       snakey_option_key >>
-      space >>
-      str("=") >>
-      space >>
-      value
+      equals_value
     end
 
     rule(:assignment_or_comment) do
