@@ -12,6 +12,7 @@ module Figtree
     rule(:space) { (match("\s") | str(' ')) }
     rule(:spaces) { space.repeat }
     rule(:newline) { match("\n") >> match("\r").maybe }
+    rule(:comment_char) { (str(';') | str('#')) }
 
     rule(:grouper) do
       str('[') >>
@@ -21,7 +22,7 @@ module Figtree
 
     rule(:comment) do
       # comments go uncaptured
-      (str(';') >>
+      (comment_char >>
        (newline.absent? >> any).repeat) >>
       (eof | newline)
     end
