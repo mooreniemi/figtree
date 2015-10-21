@@ -14,7 +14,6 @@ module Figtree
     rule(:newline) { match("\n") >> match("\r").maybe }
 
     rule(:grouper) do
-      newline.maybe >>
       str('[') >>
       group_title.as(:group_title) >>
       str(']')
@@ -29,7 +28,9 @@ module Figtree
 
     rule(:quoted_string) do
       str('"') >>
-      ((str('\\') >> any) | (str('"').absent? >> any)).repeat >>
+      (
+        (str('\\') >> any) | (str('"').absent? >> any)
+      ).repeat >>
       str('"')
     end
 
@@ -78,13 +79,14 @@ module Figtree
         (
           str('/') >>
           at_least_one_char
-        ).repeat >>
+        ).repeat(1) >>
         str('/').maybe
       ).as(:file_path)
     end
 
     rule(:snake_case_key) do
-      match('[a-zA-Z0-9_]').repeat(1).as(:snake_case_key)
+      match('[a-zA-Z0-9_]').repeat(1).
+        as(:snake_case_key)
     end
 
     rule(:snakey_option_key) do
@@ -134,15 +136,18 @@ module Figtree
     end
 
     rule(:group) do
-      (grouper >>
-       group_member.repeat.maybe).as(:group).
+      (
+        grouper >>
+        group_member.repeat.maybe
+      ).as(:group).
       repeat.maybe
     end
 
     rule(:comment_or_group) do
+      # may start file with attribution
+      # comment or timestamp etc
       comment.maybe >>
-      newline.maybe >>
-      group.maybe
+      group
     end
 
     root(:comment_or_group)

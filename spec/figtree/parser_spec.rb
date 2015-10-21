@@ -20,7 +20,7 @@ module Figtree
       expect(parser.comment).to parse(comment_first)
     end
     it 'can parse comments then groups' do
-      expect(parser.comment_or_group).to parse("; comment\n[groop]\nassignment = 0")
+      expect(parser.comment_or_group).to parse("; comment\n[groop]\nassignment = 0\n")
     end
     it 'can parse snake_case keys' do
       expect(parser.snake_case_key).to parse('basic_size_limit')
@@ -87,7 +87,8 @@ module Figtree
           "[common]",
           "basic_size_limit = 234234",
           "[rare]",
-          "pepes = 0"
+          "pepes = 0",
+          "and = feels guy"
         ].join("\n") + "\n"
       }
 
@@ -106,10 +107,8 @@ module Figtree
           to parse("[common]\nbasic_size_limit = 26214400\nstudent_size_limit = 52428800\n")
       end
       it 'can parse values including strings' do
-        group_member = "hostname = #{string}"
-        group = "[g]\n#{group_member}"
-        parser.parse_with_debug(group)
-        expect(parser.group_member).to parse(group_member)#.as(:string)
+        group_member = "\nhostname = #{string}"
+        expect(parser.group_member).to parse(group_member)
       end
       it 'can parse multiple groups' do
         expect(parser.group).to parse(multi_group)
