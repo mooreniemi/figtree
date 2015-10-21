@@ -108,7 +108,7 @@ describe Figtree do
         bad_ini_files.each do |ini_file|
           puts "\nfile is: #{ini_file}"
           expect{ Figtree::IniConfig.new("#{ini_file}") }.
-            to raise_error(Parslet::ParseFailed)
+            to raise_error
         end
       end
       it 'can parse anything INIFile gem can parse' do

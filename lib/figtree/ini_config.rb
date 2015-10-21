@@ -20,9 +20,13 @@ module Figtree
 
     def figgy_parse(str)
       Parser.new.parse(str)
-    rescue Parslet::ParseFailed => failure
+      # argument error is invalid byte sequence
+    rescue Parslet::ParseFailed, ArgumentError => failure
+      if failure.class == Parslet::ParseFailed
+        failure = failure.cause.ascii_tree
+      end
       STDERR.puts "\nInvalid ini file.\n" +
-        "Error: #{failure.cause.ascii_tree}" +
+        "Error: #{failure}" +
         "Please correct the file and retry."
         raise
     end
