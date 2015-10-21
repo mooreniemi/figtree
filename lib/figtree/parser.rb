@@ -8,7 +8,7 @@ module Figtree
     include IPv6
 
     rule(:eof) { any.absent? }
-    rule(:group_title) { match('[a-zA-Z]').repeat(1) }
+    rule(:group_title) { match('[a-zA-Z_]').repeat(1) }
     rule(:space) { (match("\s") | str(' ')) }
     rule(:spaces) { space.repeat }
     rule(:newline) { match("\n") >> match("\r").maybe }
@@ -133,12 +133,16 @@ module Figtree
     rule(:group_member) do
       newline.maybe >>
       assignment_or_comment >>
+      spaces.maybe >>
+      comment.maybe >>
       newline.repeat.maybe
     end
 
     rule(:group) do
       (
         grouper >>
+        spaces.maybe >>
+        comment.maybe >>
         group_member.repeat.maybe
       ).as(:group).
       repeat.maybe

@@ -122,8 +122,12 @@ describe Figtree do
     end
 
     context "invalid ini file" do
-      let(:unparseable_config) { 'spec/support/invalid/unparseable_settings.conf' }
-      let(:untransformable_config) { 'spec/support/invalid/untransformable_settings.conf' }
+      let(:unparseable_config) do
+        'spec/support/invalid/unparseable_settings.conf'
+      end
+      let(:untransformable_config) do
+        'spec/support/invalid/untransformable_settings.conf'
+      end
       it 'throws ParseFailed if unparseable' do
         expect { Figtree::IniConfig.new(unparseable_config) }.
           to raise_error(Parslet::ParseFailed)

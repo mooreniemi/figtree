@@ -12,9 +12,11 @@ module Figtree
     end
     it 'can parse group names' do
       expect(parser.grouper).to parse('[common]')
+      expect(parser.grouper).to parse('[common_also]')
     end
     it 'can parse comments' do
       expect(parser.comment).to parse("; This is a comment\n")
+      expect(parser.comment).to parse("# This is also a comment\n")
       expect(parser.comment).to parse("; last modified 1 April 2001 by John Doe\n")
       comment_first = File.open('spec/support/wiki_example.ini', &:readline)
       expect(parser.comment).to parse(comment_first)
@@ -97,6 +99,11 @@ module Figtree
       end
       it 'parses a group member' do
         expect(parser.group_member).to parse("\nbasic_size_limit = 26214400\n")
+      end
+      it 'can parse group members with inline comments' do
+        group_with_comments = "[section_two]  # you can comment here" +
+          "\none = 42       # and even here!"
+        expect(parser.group).to parse(group_with_comments)
       end
       it 'can parse single assignment inside a group' do
         expect(parser.group).
