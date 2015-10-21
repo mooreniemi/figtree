@@ -39,7 +39,7 @@ describe Figtree do
 					{
 						ftp: Figtree::Subgroup.new(
 							{
-								:name => "hello there, ftp uploading",
+								:name => "\"hello there, ftp uploading\"",
 								:path => "/tmp/",
 								:enabled => false
 							}
@@ -48,7 +48,7 @@ describe Figtree do
 					{
 						http: Figtree::Subgroup.new(
 							{
-								:name => "http uploading",
+								:name => "\"http uploading\"",
 								:path => "/tmp/",
 								:params => ["array", "of", "values"]
 							}

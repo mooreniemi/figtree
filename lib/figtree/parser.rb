@@ -132,7 +132,7 @@ module Figtree
     rule(:group_member) do
       newline.maybe >>
       assignment_or_comment >>
-      newline.maybe
+      newline.repeat.maybe
     end
 
     rule(:group) do
