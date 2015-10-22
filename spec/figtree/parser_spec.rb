@@ -35,6 +35,9 @@ module Figtree
     it 'can parse unquoted strings' do
       expect(parser.unquoted_string).to parse(string)
     end
+    it 'can parse multiline' do
+      expect(parser.unquoted_string).to parse("a \\   # and here, too\nb\n").as(:a)
+    end
 
     it 'can parse arrays' do
       expect(parser.array).to_not parse(',,')
@@ -81,10 +84,6 @@ module Figtree
     end
     it 'can parse overrides' do
       expect(parser.override_assignment).to parse('path<itscript> = /srv/tmp/')
-    end
-    it 'can parse multiline' do
-      expect(parser.group).to parse("[gn]\nfoo = a \\nb\n")
-      expect(parser.group).to parse("[gn]\nmulti = a \\   # and here, too\nb\n")
     end
 
     describe "using the settings.conf file for input" do

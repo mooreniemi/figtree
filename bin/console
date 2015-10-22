@@ -3,13 +3,10 @@
 require "bundler/setup"
 require "figtree"
 
-# You can add fixtures and/or initialization code here to make experimenting
-# with your gem easier. You can also use a different console, if you like.
 require "parslet/convenience"
 
 parser = Figtree::Parser.new
 
-# (If you use this, don't forget to add pry to your Gemfile!)
 require "pry"
 command_set = Pry::CommandSet.new do
   command "parse_ini_named" do |name|
@@ -23,6 +20,3 @@ command_set = Pry::CommandSet.new do
 end
 
 Pry.start parser, :commands => command_set
-
-#require "irb"
-#IRB.start
