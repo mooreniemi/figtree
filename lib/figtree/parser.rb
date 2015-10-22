@@ -36,7 +36,12 @@ module Figtree
     end
 
     rule(:unquoted_string) do
-      (newline.absent? >> any).repeat >> newline
+      (newline.absent? >> any).repeat >>
+      spaces >>
+      str('\\').maybe >>
+      spaces >>
+      comment.maybe >>
+      newline
     end
 
     rule(:string) do

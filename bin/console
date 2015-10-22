@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "figtree"
+
+# You can add fixtures and/or initialization code here to make experimenting
+# with your gem easier. You can also use a different console, if you like.
+require "parslet/convenience"
+
+parser = Figtree::Parser.new
+
+# (If you use this, don't forget to add pry to your Gemfile!)
+require "pry"
+command_set = Pry::CommandSet.new do
+  command "parse_ini_named" do |name|
+    parser = Figtree::Parser.new
+    ini_as_string = File.read("spec/support/#{name}.ini")
+    parser.parse_with_debug(ini_as_string)
+  end
+  command "multiline", "",:keep_retval => true do
+    "[gn]\nmulti = a \\   # and here, too\nb\n"
+  end
+end
+
+Pry.start parser, :commands => command_set
+
+#require "irb"
+#IRB.start

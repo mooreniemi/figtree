@@ -9,6 +9,7 @@ module Figtree
 
     it 'can parse newlines' do
       expect(parser.newline).to parse("\n")
+      expect(parser.newline).to_not parse("\\n")
     end
     it 'can parse group names' do
       expect(parser.grouper).to parse('[common]')
@@ -80,6 +81,10 @@ module Figtree
     end
     it 'can parse overrides' do
       expect(parser.override_assignment).to parse('path<itscript> = /srv/tmp/')
+    end
+    it 'can parse multiline' do
+      expect(parser.group).to parse("[gn]\nfoo = a \\nb\n")
+      expect(parser.group).to parse("[gn]\nmulti = a \\   # and here, too\nb\n")
     end
 
     describe "using the settings.conf file for input" do
