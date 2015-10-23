@@ -9,8 +9,8 @@ module Figtree
 
     rule(:eof) { any.absent? }
     rule(:group_title) { match('[a-zA-Z_]').repeat(1) }
-    rule(:space) { (match("\s") | str(' ') | comment ) }
-    rule(:spaces) { space.repeat }
+    rule(:space) { (match("\s") | str(' ')) }
+    rule(:spaces) { space.repeat(2) | comment }
     rule(:newline) { match("\n") >> match("\r").maybe }
     rule(:comment_start) { (str(';') | str('#')) }
     rule(:comment_end) { newline | str("\\n") | eof }
@@ -29,7 +29,7 @@ module Figtree
           comment_end.absent? >> any
         ).repeat
       ) >>
-      spaces.maybe >>
+      space.repeat.maybe >>
       comment_end
     end
 
@@ -47,8 +47,15 @@ module Figtree
           (comment_start | newline).absent?
         ) >>
         any
-      ).repeat(1).as(:unquoted_string) >>
-      (comment | newline)
+      ).repeat(1).as(:left) >>
+      spaces.maybe.as(:inline_comment) >>
+      (
+        (
+          (comment_start | newline).absent?
+        ) >>
+        any
+      ).repeat(1).as(:right).maybe >>
+      (newline | spaces)
     end
 
     rule(:string) do
@@ -76,11 +83,11 @@ module Figtree
       (
         # minimum array
         at_least_one_char >>
-        str(',') >> spaces.maybe >>
+        str(',') >> space.repeat.maybe >>
         at_least_one_char >>
         (
           # extending elementwise
-          str(',') >> spaces.maybe >>
+          str(',') >> space.repeat.maybe >>
           at_least_one_char
         ).repeat.maybe
       ).as(:array) >>
@@ -169,7 +176,7 @@ module Figtree
       group
     end
 
-    #root(:comment_or_group)
-    root(:unquoted_string)
+    root(:comment_or_group)
+    #root(:unquoted_string)
   end
 end

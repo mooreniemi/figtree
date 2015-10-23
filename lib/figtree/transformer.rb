@@ -14,10 +14,10 @@ module Figtree
 				key.to_sym => Integer(value)
 			}
 		end
-		rule(:snake_case_key => simple(:key), :string => simple(:value)) do
+		rule(:snake_case_key => simple(:key), :string => subtree(:value)) do
 			{
         # remove whitespace after cast
-        key.to_sym => String(value).strip
+        key.to_sym => String(value[:left] + value[:right]).strip
 			}
 		end
 		rule(:snake_case_key => simple(:key), :file_path => simple(:value)) do
