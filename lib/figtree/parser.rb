@@ -172,7 +172,7 @@ module Figtree
     rule(:comment_or_group) do
       # may start file with attribution
       # comment or timestamp etc
-      comment.maybe >>
+      comment.repeat.maybe >>
       group
     end
 
