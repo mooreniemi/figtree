@@ -11,9 +11,12 @@
 
 # Figtree
 ## about
-A parser and transformer for loading `.ini` files into Ruby dot notation accessible objects. `.ini` is not a standardized format. But the parser and transformer are easy to extend, unlike regex. :) And it's at 100% LOC coverage.
+A parser and transformer for loading `.ini` files into Ruby dot notation accessible objects. `.ini` is not a standardized format. But the parser and transformer are easy to extend. The goal of figtree is not to accept all `.ini` files generously, but more strictly define `.ini` files so we can make smarter guesses about how to covert your settings into objects.
 
 If the `.ini` file is invalid, an error will be raised, with the line and char position of the error. If you extend this gem to have more rules, and one of those rules fails to transform, you will have an error raised.
+
+## alternatives
+If you want an industrial strength, pure Ruby solution, check out [inifile gem](https://github.com/TwP/inifile). It is much more generous about what it accepts as valid `.ini` files, and with no pesky dependencies!
 
 ## disambiguation
 Looking for the graphical viewer of phyllogenic trees? You want this other [Figtree](http://tree.bio.ed.ac.uk/software/figtree/).
