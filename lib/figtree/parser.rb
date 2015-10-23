@@ -55,7 +55,7 @@ module Figtree
         ) >>
         any
       ).repeat(1).as(:right).maybe >>
-      (newline | spaces)
+      (newline.repeat(1) | spaces)
     end
 
     rule(:string) do

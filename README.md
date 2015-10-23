@@ -46,8 +46,11 @@ A typical `.ini` file takes slightly less than 0.02s to be parsed, transformed, 
     => "/srv/var/tmp/"
 
 ## development
-### installation
-`bundle install`
+### helpers
+`bin/setup`
+`bin/console`
+
+While in console, you can use `parse_ini_named name` and as long as it's in `spec/support/name.ini` it'll parse it for you with helpful error output. Sometimes this is a faster feedback mechanism than going through the tests.
 
 ### tests
 `rspec spec/`
