@@ -19,6 +19,7 @@ module Figtree
       expect(parser.comment).to parse("; This is a comment\n")
       expect(parser.comment).to parse("# This is also a comment\n")
       expect(parser.comment).to parse("; last modified 1 April 2001 by John Doe\n")
+      expect(parser.comment).to parse("#comment \\n")
       comment_first = File.open('spec/support/wiki_example.ini', &:readline)
       expect(parser.comment).to parse(comment_first)
     end
@@ -29,14 +30,29 @@ module Figtree
       expect(parser.snake_case_key).to parse('basic_size_limit')
     end
 
+    it 'can parse space' do
+      expect(parser.space).to parse("#foo")
+      expect(parser.space).to parse("# foo")
+      expect(parser.space).to parse("# foo\n")
+      expect(parser.space).to parse(" ")
+      expect(parser.space).to parse("\s")
+    end
+
     it 'can parse strings' do
       expect(parser.string).to parse('"hello there, ftp uploading"')
     end
     it 'can parse unquoted strings' do
       expect(parser.unquoted_string).to parse(string)
     end
+    it 'can parse inline comment' do
+      expect(parser.unquoted_string).to parse("a #comment\n b\n").as("a")
+    end
     it 'can parse multiline' do
-      expect(parser.unquoted_string).to parse("a \\   # and here, too\nb\n").as(:a)
+      expect(parser.unquoted_string).to parse("a \\nb\n")
+    end
+    it 'can parse multiline with comment' do
+      expect(parser.assignment).to parse("foo = a \   # and here, too\nb\n").as(:a)
+      parser.parse_with_debug("foo = a \   # and here, too\nb\n")
     end
 
     it 'can parse arrays' do

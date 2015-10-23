@@ -9,10 +9,11 @@ module Figtree
 
     rule(:eof) { any.absent? }
     rule(:group_title) { match('[a-zA-Z_]').repeat(1) }
-    rule(:space) { (match("\s") | str(' ')) }
+    rule(:space) { (match("\s") | str(' ') | comment ) }
     rule(:spaces) { space.repeat }
     rule(:newline) { match("\n") >> match("\r").maybe }
-    rule(:comment_char) { (str(';') | str('#')) }
+    rule(:comment_start) { (str(';') | str('#')) }
+    rule(:comment_end) { newline | str("\\n") | eof }
 
     rule(:grouper) do
       str('[') >>
@@ -21,27 +22,33 @@ module Figtree
     end
 
     rule(:comment) do
-      # comments go uncaptured
-      (comment_char >>
-       (newline.absent? >> any).repeat) >>
-      (eof | newline)
+      (
+        comment_start >>
+        spaces.maybe >>
+        (
+          comment_end.absent? >> any
+        ).repeat
+      ) >>
+      spaces.maybe >>
+      comment_end
     end
 
     rule(:quoted_string) do
       str('"') >>
       (
         (str('\\') >> any) | (str('"').absent? >> any)
-      ).repeat >>
+      ).repeat(1) >>
       str('"')
     end
 
     rule(:unquoted_string) do
-      (newline.absent? >> any).repeat >>
-      spaces >>
-      str('\\').maybe >>
-      spaces >>
-      comment.maybe >>
-      newline
+      (
+        (
+          (comment_start | newline).absent?
+        ) >>
+        any
+      ).repeat(1).as(:unquoted_string) >>
+      (comment | newline)
     end
 
     rule(:string) do
@@ -106,12 +113,14 @@ module Figtree
       # this ordering matters
       # we are roughly moving from more
       # to less specific
-      ( ip_address |
-       number |
-       boolean |
-       array |
-       file_path |
-       string )
+      (
+        ip_address |
+        number |
+        boolean |
+        array |
+        file_path |
+        string
+      )
     end
 
     rule(:equals_value) do
@@ -160,6 +169,7 @@ module Figtree
       group
     end
 
-    root(:comment_or_group)
+    #root(:comment_or_group)
+    root(:unquoted_string)
   end
 end

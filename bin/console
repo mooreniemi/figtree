@@ -19,4 +19,5 @@ command_set = Pry::CommandSet.new do
   end
 end
 
-Pry.start parser, :commands => command_set
+#Pry.start parser, :commands => command_set
+Pry.start nil, :commands => command_set
