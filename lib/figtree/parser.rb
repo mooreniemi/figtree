@@ -55,7 +55,7 @@ module Figtree
         ) >>
         any
       ).repeat(1).as(:right).maybe >>
-      (newline.repeat(1) | spaces)
+      (newline | spaces)
     end
 
     rule(:string) do
@@ -131,9 +131,9 @@ module Figtree
     end
 
     rule(:equals_value) do
-      space.maybe >>
+      space.repeat.maybe >>
       str("=") >>
-      space.maybe >>
+      space.repeat.maybe >>
       value
     end
 
@@ -155,7 +155,6 @@ module Figtree
       newline.maybe >>
       assignment_or_comment >>
       spaces.maybe >>
-      comment.maybe >>
       newline.repeat.maybe
     end
 

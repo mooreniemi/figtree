@@ -47,7 +47,7 @@ module Figtree
       #parser.parse_with_debug("a #comment\n b\n")
       expect(parser.unquoted_string).to parse("a #comment\n b\n") #.as("a")
       expect(parser.unquoted_string).to parse("a \\nb\n")
-      expect(parser.unquoted_string).to parse("multiline \ support\n\n")
+      expect(parser.unquoted_string).to parse("multiline \ support\n")
     end
 
     it 'can parse multiline with comment' do
