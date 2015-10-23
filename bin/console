@@ -9,13 +9,10 @@ parser = Figtree::Parser.new
 
 require "pry"
 command_set = Pry::CommandSet.new do
-  command "parse_ini_named" do |name|
+  command "parse_ini_named", "", :keep_retval => true do |name|
     parser = Figtree::Parser.new
     ini_as_string = File.read("spec/support/#{name}.ini")
     parser.parse_with_debug(ini_as_string)
-  end
-  command "multiline", "",:keep_retval => true do
-    "[gn]\nmulti = a \\   # and here, too\nb\n"
   end
 end
 
