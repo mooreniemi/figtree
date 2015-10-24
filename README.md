@@ -20,7 +20,7 @@ What kinds of objects are supported? Currently we can recognize [unix style file
 If the `.ini` file is invalid, an error will be raised, with the line and char position of the error. If you extend this gem to have more rules, and one of those rules fails to transform, you will have an error raised.
 
 ## alternatives
-If you want an industrial strength, pure Ruby solution, check out [inifile gem](https://github.com/TwP/inifile). It is much more generous about what it accepts as valid `.ini` files, and with no pesky dependencies!
+If you want an industrial strength, pure Ruby solution, check out [inifile gem](https://github.com/TwP/inifile). It is much looser about what it accepts as valid `.ini` files, and with no pesky dependencies! If you want to see exactly which cases `figtree` supports vs `inifile`, compare our spec files. Many of the cases in our `invalid/` folder `inifile` will parse for you.
 
 ## disambiguation
 Looking for the graphical viewer of phyllogenic trees? You want this other [Figtree](http://tree.bio.ed.ac.uk/software/figtree/).
