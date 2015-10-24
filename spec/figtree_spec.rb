@@ -111,7 +111,7 @@ describe Figtree do
             to raise_error
         end
       end
-      it 'can parse anything INIFile gem can parse' do
+      it 'can parse a subset of what INIFile gem can parse' do
         ini_files = Dir["spec/support/*.ini"]
         ini_files.each do |ini_file|
           puts "\nfile is: #{ini_file}"

@@ -10,6 +10,7 @@ module Figtree
     it 'can parse newlines' do
       expect(parser.newline).to parse("\n")
       expect(parser.newline).to_not parse("\\n")
+      expect(parser.newline).to_not parse("\\\n")
     end
     it 'can parse group names' do
       expect(parser.grouper).to parse('[common]')
@@ -38,21 +39,27 @@ module Figtree
       expect(parser.spaces).to_not parse("\s")
       expect(parser.spaces).to_not parse("a b")
     end
-
     it 'can parse strings' do
       expect(parser.string).to parse('"hello there, ftp uploading"')
     end
     it 'can parse unquoted strings' do
       expect(parser.unquoted_string).to parse(string)
-      #parser.parse_with_debug("a #comment\n b\n")
-      expect(parser.unquoted_string).to parse("a #comment\n b\n") #.as("a")
       expect(parser.unquoted_string).to parse("a \\nb\n")
-      expect(parser.unquoted_string).to parse("multiline \ support\n")
+      expect(parser.unquoted_string).to parse("multiline \\\nsupport\n")
     end
-
     it 'can parse multiline with comment' do
-      #expect(parser.assignment).to parse("foo = a \   # and here, too\nb\n").as(:a)
-      parser.parse_with_debug("foo = a \   # and here, too\nb\n")
+      expect(parser.unquoted_string).to parse("a #")
+      expect(parser.unquoted_string).to parse("a \\#")
+      expect(parser.unquoted_string).to parse("a #comment\n")
+      expect(parser.unquoted_string).to parse("a \\#comment\n b\n")
+      expect(parser.assignment).to parse("foo = a \\nb\n")
+      expect(parser.assignment).to parse("foo = a \\   # and here, too\nb\n")
+
+      group = "[section_three]\nthree   = hello \\\nmultiline\nother = 2"
+      expect(parser.group).to parse(group)
+
+      multiline_only = File.read('spec/support/multiline_only.ini')
+      expect(parser.group).to parse(multiline_only)
     end
 
     it 'can parse arrays' do
@@ -118,12 +125,18 @@ module Figtree
         expect(parser.comment_or_group).to parse("[database]\nserver = 192.0.2.62")
       end
       it 'parses a group member' do
-        expect(parser.group_member).to parse("\nbasic_size_limit = 26214400\n")
+        expect(parser.group_member).to parse("basic_size_limit = 26214400\n")
       end
       it 'can parse group members with inline comments' do
         group_with_comments = "[section_two]  # you can comment here" +
           "\none = 42       # and even here!"
         expect(parser.group).to parse(group_with_comments)
+      end
+      it 'can parse assignment irrespective of spacing' do
+        expect(parser.assignment).
+          to parse("basic_size_limit=         26214400\n")
+        expect(parser.assignment).
+          to parse("basic_size_limit          = 26214400\n")
       end
       it 'can parse single assignment inside a group' do
         expect(parser.group).
@@ -134,7 +147,7 @@ module Figtree
           to parse("[common]\nbasic_size_limit = 26214400\nstudent_size_limit = 52428800\n")
       end
       it 'can parse values including strings' do
-        group_member = "\nhostname = #{string}"
+        group_member = "hostname = #{string}"
         expect(parser.group_member).to parse(group_member)
       end
       it 'can parse multiple groups' do

@@ -10,10 +10,11 @@ module Figtree
     rule(:eof) { any.absent? }
     rule(:group_title) { match('[a-zA-Z_]').repeat(1) }
     rule(:space) { (match("\s") | str(' ')) }
-    rule(:spaces) { space.repeat(2) | comment }
-    rule(:newline) { match("\n") >> match("\r").maybe }
+    rule(:spaces) { (space.repeat(2) | comment) }
+    rule(:newline) { str("\n") >> match("\r").maybe }
     rule(:comment_start) { (str(';') | str('#')) }
-    rule(:comment_end) { newline | str("\\n") | eof }
+    rule(:comment_end) { (newline | eof) }
+    rule(:terminator) { (comment | newline | eof) }
 
     rule(:grouper) do
       str('[') >>
@@ -24,7 +25,7 @@ module Figtree
     rule(:comment) do
       (
         comment_start >>
-        spaces.maybe >>
+        space.repeat(0) >>
         (
           comment_end.absent? >> any
         ).repeat
@@ -44,18 +45,10 @@ module Figtree
     rule(:unquoted_string) do
       (
         (
-          (comment_start | newline).absent?
-        ) >>
-        any
-      ).repeat(1).as(:left) >>
-      spaces.maybe.as(:inline_comment) >>
-      (
-        (
-          (comment_start | newline).absent?
-        ) >>
-        any
-      ).repeat(1).as(:right).maybe >>
-      (newline | spaces)
+          (str('\\') >> any) | (terminator.absent? >> any)
+        ).repeat(1) >>
+        terminator
+      ).repeat(1)
     end
 
     rule(:string) do
@@ -83,13 +76,11 @@ module Figtree
       (
         # minimum array
         at_least_one_char >>
-        str(',') >> space.repeat.maybe >>
-        at_least_one_char >>
         (
           # extending elementwise
           str(',') >> space.repeat.maybe >>
           at_least_one_char
-        ).repeat.maybe
+        ).repeat(1)
       ).as(:array) >>
       (newline | eof)
     end
@@ -131,10 +122,11 @@ module Figtree
     end
 
     rule(:equals_value) do
-      space.repeat.maybe >>
+      space.repeat(0) >>
       str("=") >>
-      space.repeat.maybe >>
-      value
+      space.repeat(0) >>
+      value >>
+      newline.repeat(0)
     end
 
     rule(:assignment) do
@@ -152,20 +144,20 @@ module Figtree
     end
 
     rule(:group_member) do
-      newline.maybe >>
       assignment_or_comment >>
-      spaces.maybe >>
-      newline.repeat.maybe
+      space.repeat(0) >>
+      newline.repeat(0)
     end
 
     rule(:group) do
       (
         grouper >>
-        spaces.maybe >>
+        space.repeat(0) >>
         comment.maybe >>
-        group_member.repeat.maybe
+        newline.repeat(0) >>
+        group_member.repeat(0)
       ).as(:group).
-      repeat.maybe
+      repeat(0)
     end
 
     rule(:comment_or_group) do
