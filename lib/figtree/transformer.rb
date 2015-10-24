@@ -15,13 +15,21 @@ module Figtree
       }
     end
     rule(:snake_case_key => simple(:key), :string => subtree(:value)) do
-      if value.respond_to?(:[])
-        # for unquoted strings we may have to merge
-        # around inline comments etc
-        merged_string = value[:left] + value[:right]
-      else
-        merged_string = value
-      end
+      merged_string =
+        case value
+        when Hash
+          value[:right]
+        when Array
+          value.inject("") do |string, element|
+            if !element[:left].nil?
+              string + element[:left]
+            else
+              string + element[:right]
+            end
+          end
+        else
+          value
+        end
       {
         # remove whitespace after cast
         key.to_sym => String(merged_string).strip

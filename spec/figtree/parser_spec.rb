@@ -12,6 +12,14 @@ module Figtree
       expect(parser.newline).to_not parse("\\n")
       expect(parser.newline).to_not parse("\\\n")
     end
+    it 'terminates correctly' do
+      expect(parser.terminator).to parse("     #comment")
+      expect(parser.terminator).to parse("     #comment\n")
+      expect(parser.terminator).to parse("   \n")
+      expect(parser.terminator).to parse("   ")
+      expect(parser.unquoted_string).to parse("f    #ffoo")
+      expect(parser.unquoted_string).to parse("f    #ffoo\n")
+    end
     it 'can parse group names' do
       expect(parser.grouper).to parse('[common]')
       expect(parser.grouper).to parse('[common_also]')
@@ -44,13 +52,12 @@ module Figtree
     end
     it 'can parse unquoted strings' do
       expect(parser.unquoted_string).to parse(string)
-      expect(parser.unquoted_string).to parse("a \\nb\n")
       expect(parser.unquoted_string).to parse("multiline \\\nsupport\n")
     end
     it 'can parse multiline with comment' do
-      expect(parser.unquoted_string).to parse("a #")
-      expect(parser.unquoted_string).to parse("a \\#")
       expect(parser.unquoted_string).to parse("a #comment\n")
+      expect(parser.unquoted_string).to parse("a #")
+      expect(parser.unquoted_string).to_not parse("a\nb")
       expect(parser.unquoted_string).to parse("a \\#comment\n b\n")
       expect(parser.assignment).to parse("foo = a \\nb\n")
       expect(parser.assignment).to parse("foo = a \\   # and here, too\nb\n")

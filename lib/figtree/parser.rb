@@ -14,7 +14,7 @@ module Figtree
     rule(:newline) { str("\n") >> match("\r").maybe }
     rule(:comment_start) { (str(';') | str('#')) }
     rule(:comment_end) { (newline | eof) }
-    rule(:terminator) { (comment | newline | eof) }
+    rule(:terminator) { space.repeat(0) >> (comment | newline | eof) }
 
     rule(:grouper) do
       str('[') >>
@@ -30,7 +30,7 @@ module Figtree
           comment_end.absent? >> any
         ).repeat
       ) >>
-      space.repeat.maybe >>
+      space.repeat(0) >>
       comment_end
     end
 
@@ -42,13 +42,24 @@ module Figtree
       str('"')
     end
 
+    rule(:backslash) do
+      space.repeat(0) >> str("\\")
+    end
+
     rule(:unquoted_string) do
       (
         (
-          (str('\\') >> any) | (terminator.absent? >> any)
-        ).repeat(1) >>
+          (
+            (backslash | terminator).absent?
+          ) >> any
+        ).repeat(1).as(:left) >>
+        backslash >>
         terminator
-      ).repeat(1)
+      ).repeat(0) >>
+      (
+        terminator.absent? >> any
+      ).repeat(1).as(:right) >>
+      terminator
     end
 
     rule(:string) do

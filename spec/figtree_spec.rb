@@ -113,6 +113,7 @@ describe Figtree do
       end
       it 'can parse a subset of what INIFile gem can parse' do
         ini_files = Dir["spec/support/*.ini"]
+        expect(Figtree::IniConfig.new("spec/support/comment.ini")).to be_a Figtree::IniConfig
         ini_files.each do |ini_file|
           puts "\nfile is: #{ini_file}"
           expect(Figtree::IniConfig.new("#{ini_file}")).

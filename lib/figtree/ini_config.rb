@@ -22,7 +22,6 @@ module Figtree
       Parser.new.parse(str)
       # argument error is invalid byte sequence
     rescue Parslet::ParseFailed, ArgumentError => failure
-      puts failure
       if failure.class == Parslet::ParseFailed
         failure = failure.cause.ascii_tree
       end
@@ -35,7 +34,6 @@ module Figtree
     def figgy_transform(tree, override)
       Transformer.new.apply(tree, override: override)
     rescue => e
-      puts e
       STDERR.puts "\nInvalid transformation rule.\n" +
         "Error: #{e}" +
         "Please correct your transformer rule and retry."
