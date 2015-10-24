@@ -15,7 +15,7 @@ A parser and transformer for loading `.ini` files into Ruby dot notation accessi
 
 The goal of figtree is not to accept all `.ini` files generously, but more strictly define `.ini` files so we can make smarter guesses about how to covert your settings into objects.
 
-What kinds of objects are supported? Currently we can recognize [filepath into Pathname](http://ruby-doc.org/stdlib-2.0.0/libdoc/pathname/rdoc/Pathname.html), [ip address into IPAddr](http://ruby-doc.org/stdlib-2.0.0/libdoc/ipaddr/rdoc/IPAddr.html), and most common Ruby types (String, Array, Boolean, Integer).
+What kinds of objects are supported? Currently we can recognize [unix style filepaths into Pathname](http://ruby-doc.org/stdlib-2.0.0/libdoc/pathname/rdoc/Pathname.html), [ip4 and ip6 addresses into IPAddr](http://ruby-doc.org/stdlib-2.0.0/libdoc/ipaddr/rdoc/IPAddr.html), and most common Ruby types (String, Array, Boolean, Integer). If there's other types you'd like to see supported, please [file an issue](https://github.com/mooreniemi/figtree/issues/new).
 
 If the `.ini` file is invalid, an error will be raised, with the line and char position of the error. If you extend this gem to have more rules, and one of those rules fails to transform, you will have an error raised.
 
