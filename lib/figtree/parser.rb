@@ -12,9 +12,12 @@ module Figtree
     rule(:space) { (match("\s") | str(' ')) }
     rule(:spaces) { (space.repeat(2) | comment) }
     rule(:newline) { str("\n") >> match("\r").maybe }
-    rule(:comment_start) { (str(';') | str('#')) }
-    rule(:comment_end) { (newline | eof) }
-    rule(:terminator) { space.repeat(0) >> (comment | newline | eof) }
+    rule(:terminator) do
+      space.repeat(0) >> (comment | newline | eof)
+    end
+    rule(:backslash) do
+      space.repeat(0) >> str("\\")
+    end
 
     rule(:grouper) do
       str('[') >>
@@ -22,6 +25,8 @@ module Figtree
       str(']')
     end
 
+    rule(:comment_start) { (str(';') | str('#')) }
+    rule(:comment_end) { (newline | eof) }
     rule(:comment) do
       (
         comment_start >>
@@ -42,9 +47,6 @@ module Figtree
       str('"')
     end
 
-    rule(:backslash) do
-      space.repeat(0) >> str("\\")
-    end
 
     rule(:unquoted_string) do
       (
@@ -67,8 +69,12 @@ module Figtree
     end
 
     rule(:boolean) do
-      # TODO expand this check
-      (str('no') | str('yes')).as(:boolean)
+      (
+        str('no') |
+        str('yes') |
+        str('false') |
+        str('true')
+      ).as(:boolean)
     end
 
     rule(:number) do
@@ -179,6 +185,5 @@ module Figtree
     end
 
     root(:comment_or_group)
-    #root(:unquoted_string)
   end
 end

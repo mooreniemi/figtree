@@ -11,7 +11,11 @@
 
 # Figtree
 ## about
-A parser and transformer for loading `.ini` files into Ruby dot notation accessible objects. `.ini` is not a standardized format. But the parser and transformer are easy to extend. The goal of figtree is not to accept all `.ini` files generously, but more strictly define `.ini` files so we can make smarter guesses about how to covert your settings into objects.
+A parser and transformer for loading `.ini` files into Ruby dot notation accessible objects. `.ini` is not a standardized format. But the parser and transformer are easy to extend.
+
+The goal of figtree is not to accept all `.ini` files generously, but more strictly define `.ini` files so we can make smarter guesses about how to covert your settings into objects.
+
+What kinds of objects are supported? Currently we can recognize [filepath into Pathname](http://ruby-doc.org/stdlib-2.0.0/libdoc/pathname/rdoc/Pathname.html), [ip address into IPAddr](http://ruby-doc.org/stdlib-2.0.0/libdoc/ipaddr/rdoc/IPAddr.html), and most common Ruby types (String, Array, Boolean, Integer).
 
 If the `.ini` file is invalid, an error will be raised, with the line and char position of the error. If you extend this gem to have more rules, and one of those rules fails to transform, you will have an error raised.
 
@@ -56,6 +60,5 @@ While in console, you can use `parse_ini_named name` and as long as it's in `spe
 `rspec spec/`
 
 #### TODO
-- move way from needing to parse whole file at once? (move to `IO.foreach` ?)
+- more cleanup
 - give char/line position of transformer failures
-- refactor marked TODO listings in files (mostly refactoring to generic in Transformer)

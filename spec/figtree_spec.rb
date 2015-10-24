@@ -1,6 +1,4 @@
 require 'spec_helper'
-# for the performance test at bottom
-require 'benchmark'
 
 describe Figtree do
   describe '#load_config' do
@@ -10,7 +8,7 @@ describe Figtree do
         :basic_size_limit => 26214400,
         :student_size_limit => 52428800,
         :paid_users_size_limit => 2147483648,
-        :path => "/srv/var/tmp/",
+        :path => Pathname.new("/srv/var/tmp/"),
       )
     end
 
@@ -19,7 +17,7 @@ describe Figtree do
         :basic_size_limit => 26214400,
         :student_size_limit => 52428800,
         :paid_users_size_limit => 2147483648,
-        :path => "/srv/tmp/",
+        :path => Pathname.new("/srv/tmp/"),
       )
     end
 
@@ -32,7 +30,7 @@ describe Figtree do
                 :basic_size_limit => 26214400,
                 :student_size_limit=> 52428800,
                 :paid_users_size_limit=> 2147483648,
-                :path=> "/srv/var/tmp/"
+                :path=> Pathname.new("/srv/var/tmp/")
               }
             )
           },
@@ -40,7 +38,7 @@ describe Figtree do
             ftp: Figtree::Subgroup.new(
               {
                 :name => "\"hello there, ftp uploading\"",
-                :path => "/tmp/",
+                :path => Pathname.new("/tmp/"),
                 :enabled => false
               }
             )
@@ -49,7 +47,7 @@ describe Figtree do
             http: Figtree::Subgroup.new(
               {
                 :name => "\"http uploading\"",
-                :path => "/tmp/",
+                :path => Pathname.new("/tmp/"),
                 :params => ["array", "of", "values"]
               }
             )
@@ -75,6 +73,7 @@ describe Figtree do
     end
 
     context "performance" do
+      require 'benchmark'
       it 'can parse the whole ini file quickly' do
         expect(
           Benchmark.realtime do
@@ -85,7 +84,7 @@ describe Figtree do
       end
     end
 
-    context "alternate valid ini files" do
+    context "checking full transform" do
       let(:mini_ini_file) { 'spec/support/mini_ini_example.ini' }
       let(:mini_ini_config) do
         Figtree::IniConfig.new(
@@ -103,19 +102,21 @@ describe Figtree do
         expect(Figtree::IniConfig.new(mini_ini_file)).
           to eq(mini_ini_config)
       end
+    end
+
+    context "comparing to inifile gem" do
       it 'does not parse anything INIFile gem cant parse' do
         bad_ini_files = Dir["spec/support/invalid/*.ini"]
         bad_ini_files.each do |ini_file|
-          puts "\nfile is: #{ini_file}"
+          #puts "\nfile is: #{ini_file}"
           expect{ Figtree::IniConfig.new("#{ini_file}") }.
             to raise_error
         end
       end
       it 'can parse a subset of what INIFile gem can parse' do
         ini_files = Dir["spec/support/*.ini"]
-        expect(Figtree::IniConfig.new("spec/support/comment.ini")).to be_a Figtree::IniConfig
         ini_files.each do |ini_file|
-          puts "\nfile is: #{ini_file}"
+          #puts "\nfile is: #{ini_file}"
           expect(Figtree::IniConfig.new("#{ini_file}")).
             to be_a Figtree::IniConfig
         end

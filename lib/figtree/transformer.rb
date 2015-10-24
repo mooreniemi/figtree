@@ -7,8 +7,6 @@ module Figtree
   # a transformer takes a parsed, valid AST and applies rules, usually
   # in a context free manner
   class Transformer < Parslet::Transform
-    # TODO these could largely be consolidated with some rearrangement
-    # these are all type conversions
     rule(:snake_case_key => simple(:key), :number => simple(:value)) do
       {
         key.to_sym => Integer(value)
@@ -37,7 +35,7 @@ module Figtree
     end
     rule(:snake_case_key => simple(:key), :file_path => simple(:value)) do
       {
-        key.to_sym => String(value)
+        key.to_sym => Pathname.new(value)
       }
     end
     # depends on wannabe_bool refining String class
@@ -53,7 +51,6 @@ module Figtree
     end
 
     rule(:snake_case_key => simple(:key), :ip_address => subtree(:value)) do
-      # right now we're not distinguishing what kind of ip it is
       {
         key.to_sym => IPAddr.new((value.values.first.to_s))
       }
@@ -79,7 +76,7 @@ module Figtree
     ) do
       if override.to_sym == overriding_key[:snake_case_key].to_sym
         {
-          overridden_key[:snake_case_key] => String(new_file_path)
+          overridden_key[:snake_case_key] => Pathname.new(new_file_path)
         }
       else
         {

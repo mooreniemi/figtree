@@ -73,7 +73,7 @@ module Figtree
 				expect(Transformer.new.apply(override_tree, override: :production)).to eq(
 					[
 						{
-							http: Subgroup.new(path: '/srv/var/tmp/')
+              http: Subgroup.new(path: Pathname.new('/srv/var/tmp/'))
 						}
 					]
 				)
