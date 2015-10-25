@@ -10,7 +10,6 @@ module Figtree
     rule(:eof) { any.absent? }
     rule(:group_title) { match('[a-zA-Z_]').repeat(1) }
     rule(:space) { (match("\s") | str(' ')) }
-    rule(:spaces) { (space.repeat(2) | comment) }
     rule(:newline) { str("\n") >> match("\r").maybe }
     rule(:terminator) do
       space.repeat(0) >> (comment | newline | eof)

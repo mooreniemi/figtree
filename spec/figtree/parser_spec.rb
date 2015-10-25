@@ -37,14 +37,6 @@ module Figtree
     end
 
     describe 'strings of all kinds' do
-      it 'can parse spaces' do
-        expect(parser.spaces).to parse("#foo")
-        expect(parser.spaces).to parse("# foo")
-        expect(parser.spaces).to parse("# foo\n")
-        expect(parser.spaces).to_not parse(" ")
-        expect(parser.spaces).to_not parse("\s")
-        expect(parser.spaces).to_not parse("a b")
-      end
       it 'can parse strings' do
         expect(parser.string).to parse('"hello there, ftp uploading"')
       end
